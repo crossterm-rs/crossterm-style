@@ -16,7 +16,7 @@ use crossterm_utils::Result;
 ///
 /// This trait is implemented for `WinApi` (Windows specific) and `ANSI` (Unix specific),
 /// so that color-related actions can be performed on both UNIX and Windows systems.
-pub trait Color {
+pub(crate) trait Color : Sync + Send {
     /// Set the foreground color to the given color.
     fn set_fg(&self, fg_color: ColorType) -> Result<()>;
     /// Set the background color to the given color.

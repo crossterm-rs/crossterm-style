@@ -21,7 +21,7 @@ const BG_BLUE: u16 = wincon::BACKGROUND_BLUE;
 const BG_INTENSITY: u16 = wincon::BACKGROUND_INTENSITY;
 
 /// This struct is a WinApi implementation for color related actions.
-pub struct WinApiColor;
+pub(crate) struct WinApiColor;
 
 impl WinApiColor {
     pub fn new() -> Box<WinApiColor> {

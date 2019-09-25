@@ -179,51 +179,48 @@
 #![deny(unused_imports)]
 
 use std::fmt::Display;
+use std::env;
 
 pub use crossterm_utils::{
     execute, impl_display, queue, supports_ansi, Command, ExecutableCommand, QueueableCommand,
     Result,
 };
 
+use color::ansi::{self, AnsiColor};
+#[cfg(windows)]
+use color::winapi::WinApiColor;
+use color::Color;
+
 pub use self::enums::{Attribute, ColorType, Colored};
 pub use self::objectstyle::ObjectStyle;
 pub use self::styledobject::StyledObject;
 pub use self::traits::{Colorize, Styler};
 
-use color::ansi::{self, AnsiColor};
-#[cfg(windows)]
-use color::winapi::WinApiColor;
-use color::Color;
-use std::env;
-
 #[macro_use]
 mod macros;
 mod color;
 mod enums;
-pub mod objectstyle;
-pub mod styledobject;
 mod traits;
+mod objectstyle;
+mod styledobject;
 
 /// This could be used to style a type that implements `Display` with colors and attributes.
 ///
 /// # Example
-/// ```ignore
+/// ```no_run
 /// // get a styled object which could be painted to the terminal.
+/// use crossterm_style::{style, ColorType};
+///
 /// let styled_object = style("Some Blue colored text on black background")
 ///     .with(ColorType::Blue)
 ///     .on(ColorType::Black);
 ///
-/// // print the styled text * times to the current screen.
+/// // print the styled text 10 * times to the current screen.
 /// for i in 1..10
 /// {
 ///     println!("{}", styled_object);
 /// }
 /// ```
-///
-/// # Important Remark
-///
-/// - Please checkout the documentation for `Colorizer` or `Styler`.
-/// Those types will make it a bit easier to style a string.
 pub fn style<'a, D: 'a>(val: D) -> StyledObject<D>
 where
     D: Display + Clone,
@@ -293,15 +290,15 @@ impl Styler<&'static str> for &'static str {
 /// - RGB support (Windows 10 and UNIX only)
 /// - Text Attributes like: bold, italic, underscore and crossed word ect (Windows 10 and UNIX only)
 ///
-/// Check `/examples/` in the library for more specific examples.
+/// Check [examples](https://github.com/crossterm-rs/examples) in the library for more specific examples.
 ///
 /// ## Examples
 ///
 /// Basic usage:
 ///
 /// ```no_run
-/// // You can replace the following line with `use crossterm::TerminalCursor;`
-/// // if you're using the `crossterm` crate with the `cursor` feature enabled.
+/// // You can replace the following line with `use crossterm::TerminalColor;`
+/// // if you're using the `crossterm` crate with the `style` feature enabled.
 /// use crossterm_style::{Result, TerminalColor, ColorType};
 ///
 /// fn main() -> Result<()> {
@@ -322,7 +319,7 @@ pub struct TerminalColor {
 }
 
 impl TerminalColor {
-    /// Create new instance whereon color related actions can be performed.
+    /// Creates a new `TerminalColor`
     pub fn new() -> TerminalColor {
         #[cfg(windows)]
         let color = if supports_ansi() {
