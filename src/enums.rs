@@ -1,5 +1,5 @@
-pub use self::{attribute::Attribute, color::Color, colored::Colored};
+pub use self::{attribute::Attribute, color_type::ColorType, colored::Colored};
 
 mod attribute;
-mod color;
+mod color_type;
 mod colored;

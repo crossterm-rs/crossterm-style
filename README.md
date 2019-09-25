@@ -91,29 +91,29 @@ _style text with colors_
 ```rust
 use crossterm_style::{Colored, Color, Colorize};
 
-println!("{} Red foreground color", Colored::Fg(Color::Red));
-println!("{} Blue background color", Colored::Bg(Color::Blue));
+println!("{} Red foreground color", Colored::Fg(ColorType::Red));
+println!("{} Blue background color", Colored::Bg(ColorType::Blue));
 
 // you can also call different coloring methods on a `&str`.
 let styled_text = "Bold Underlined".red().on_blue();
 println!("{}", styled_text);
 
 // old-way but still usable
-let styled_text = style("Bold Underlined").with(Color::Red).on(Color::Blue);
+let styled_text = style("Bold Underlined").with(ColorType::Red).on(ColorType::Blue);
 ```
 
 _style text with RGB and ANSI Value_
 
 ```rust
 // custom rgb value (Windows 10 and UNIX systems)
-println!("{} some colored text", Colored::Fg(Color::Rgb {
+println!("{} some colored text", Colored::Fg(ColorType::Rgb {
     r: 10,
     g: 10,
     b: 10
 }));
 
 // custom ansi color value (Windows 10 and UNIX systems)
-println!("{} some colored text", Colored::Fg(Color::AnsiValue(10)));
+println!("{} some colored text", Colored::Fg(ColorType::AnsiValue(10)));
 ```
 
 ## Tested terminals

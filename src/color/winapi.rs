@@ -8,7 +8,7 @@ use winapi::um::wincon;
 use crossterm_utils::Result;
 use crossterm_winapi::{Console, Handle, HandleType, ScreenBuffer};
 
-use crate::{Color, Colored, ITerminalColor};
+use crate::{Color, ColorType, Colored};
 
 const FG_GREEN: u16 = wincon::FOREGROUND_GREEN;
 const FG_RED: u16 = wincon::FOREGROUND_RED;
@@ -29,8 +29,8 @@ impl WinApiColor {
     }
 }
 
-impl ITerminalColor for WinApiColor {
-    fn set_fg(&self, fg_color: Color) -> Result<()> {
+impl Color for WinApiColor {
+    fn set_fg(&self, fg_color: ColorType) -> Result<()> {
         // init the original color in case it is not set.
         init_console_color()?;
 
@@ -44,7 +44,7 @@ impl ITerminalColor for WinApiColor {
         let mut color: u16;
         let attrs = csbi.attributes();
         let bg_color = attrs & 0x0070;
-        color = color_value.parse::<u16>()? | bg_color;
+        color = color_value | bg_color;
 
         // background intensity is a separate value in attrs,
         // wee need to check if this was applied to the current bg color.
@@ -57,7 +57,7 @@ impl ITerminalColor for WinApiColor {
         Ok(())
     }
 
-    fn set_bg(&self, bg_color: Color) -> Result<()> {
+    fn set_bg(&self, bg_color: ColorType) -> Result<()> {
         // init the original color in case it is not set.
         init_console_color()?;
 
@@ -71,7 +71,7 @@ impl ITerminalColor for WinApiColor {
         let mut color: u16;
         let attrs = csbi.attributes();
         let fg_color = attrs & 0x0007;
-        color = fg_color | color_value.parse::<u16>()?;
+        color = fg_color | color_value;
 
         // Foreground intensity is a separate value in attrs,
         // So we need to check if this was applied to the current fg color.
@@ -95,30 +95,30 @@ impl ITerminalColor for WinApiColor {
 }
 
 /// This will get the winapi color value from the Color and ColorType struct
-fn color_value(color: Colored) -> String {
+fn color_value(color: Colored) -> u16 {
     let winapi_color: u16;
 
     match color {
         Colored::Fg(color) => {
             winapi_color = match color {
-                Color::Black => 0,
-                Color::DarkGrey => FG_INTENSITY,
-                Color::Red => FG_INTENSITY | FG_RED,
-                Color::DarkRed => FG_RED,
-                Color::Green => FG_INTENSITY | FG_GREEN,
-                Color::DarkGreen => FG_GREEN,
-                Color::Yellow => FG_INTENSITY | FG_GREEN | FG_RED,
-                Color::DarkYellow => FG_GREEN | FG_RED,
-                Color::Blue => FG_INTENSITY | FG_BLUE,
-                Color::DarkBlue => FG_BLUE,
-                Color::Magenta => FG_INTENSITY | FG_RED | FG_BLUE,
-                Color::DarkMagenta => FG_RED | FG_BLUE,
-                Color::Cyan => FG_INTENSITY | FG_GREEN | FG_BLUE,
-                Color::DarkCyan => FG_GREEN | FG_BLUE,
-                Color::White => FG_RED | FG_GREEN | FG_BLUE,
-                Color::Grey => FG_INTENSITY | FG_RED | FG_GREEN | FG_BLUE,
+                ColorType::Black => 0,
+                ColorType::DarkGrey => FG_INTENSITY,
+                ColorType::Red => FG_INTENSITY | FG_RED,
+                ColorType::DarkRed => FG_RED,
+                ColorType::Green => FG_INTENSITY | FG_GREEN,
+                ColorType::DarkGreen => FG_GREEN,
+                ColorType::Yellow => FG_INTENSITY | FG_GREEN | FG_RED,
+                ColorType::DarkYellow => FG_GREEN | FG_RED,
+                ColorType::Blue => FG_INTENSITY | FG_BLUE,
+                ColorType::DarkBlue => FG_BLUE,
+                ColorType::Magenta => FG_INTENSITY | FG_RED | FG_BLUE,
+                ColorType::DarkMagenta => FG_RED | FG_BLUE,
+                ColorType::Cyan => FG_INTENSITY | FG_GREEN | FG_BLUE,
+                ColorType::DarkCyan => FG_GREEN | FG_BLUE,
+                ColorType::White => FG_RED | FG_GREEN | FG_BLUE,
+                ColorType::Grey => FG_INTENSITY | FG_RED | FG_GREEN | FG_BLUE,
 
-                Color::Reset => {
+                ColorType::Reset => {
                     // init the original color in case it is not set.
                     let mut original_color = original_console_color();
 
@@ -130,30 +130,30 @@ fn color_value(color: Colored) -> String {
                 }
 
                 /* WinApi will be used for systems that do not support ANSI, those are windows version less then 10. RGB and 255 (AnsiBValue) colors are not supported in that case.*/
-                Color::Rgb { r: _, g: _, b: _ } => 0,
-                Color::AnsiValue(_val) => 0,
+                ColorType::Rgb { r: _, g: _, b: _ } => 0,
+                ColorType::AnsiValue(_val) => 0,
             };
         }
         Colored::Bg(color) => {
             winapi_color = match color {
-                Color::Black => 0,
-                Color::DarkGrey => BG_INTENSITY,
-                Color::Red => BG_INTENSITY | BG_RED,
-                Color::DarkRed => BG_RED,
-                Color::Green => BG_INTENSITY | BG_GREEN,
-                Color::DarkGreen => BG_GREEN,
-                Color::Yellow => BG_INTENSITY | BG_GREEN | BG_RED,
-                Color::DarkYellow => BG_GREEN | BG_RED,
-                Color::Blue => BG_INTENSITY | BG_BLUE,
-                Color::DarkBlue => BG_BLUE,
-                Color::Magenta => BG_INTENSITY | BG_RED | BG_BLUE,
-                Color::DarkMagenta => BG_RED | BG_BLUE,
-                Color::Cyan => BG_INTENSITY | BG_GREEN | BG_BLUE,
-                Color::DarkCyan => BG_GREEN | BG_BLUE,
-                Color::White => BG_INTENSITY | BG_RED | BG_GREEN | BG_BLUE,
-                Color::Grey => BG_RED | BG_GREEN | BG_BLUE,
+                ColorType::Black => 0,
+                ColorType::DarkGrey => BG_INTENSITY,
+                ColorType::Red => BG_INTENSITY | BG_RED,
+                ColorType::DarkRed => BG_RED,
+                ColorType::Green => BG_INTENSITY | BG_GREEN,
+                ColorType::DarkGreen => BG_GREEN,
+                ColorType::Yellow => BG_INTENSITY | BG_GREEN | BG_RED,
+                ColorType::DarkYellow => BG_GREEN | BG_RED,
+                ColorType::Blue => BG_INTENSITY | BG_BLUE,
+                ColorType::DarkBlue => BG_BLUE,
+                ColorType::Magenta => BG_INTENSITY | BG_RED | BG_BLUE,
+                ColorType::DarkMagenta => BG_RED | BG_BLUE,
+                ColorType::Cyan => BG_INTENSITY | BG_GREEN | BG_BLUE,
+                ColorType::DarkCyan => BG_GREEN | BG_BLUE,
+                ColorType::White => BG_INTENSITY | BG_RED | BG_GREEN | BG_BLUE,
+                ColorType::Grey => BG_RED | BG_GREEN | BG_BLUE,
 
-                Color::Reset => {
+                ColorType::Reset => {
                     // init the original color in case it is not set.
                     let mut original_color = original_console_color();
 
@@ -163,13 +163,13 @@ fn color_value(color: Colored) -> String {
                     original_color
                 }
                 /* WinApi will be used for systems that do not support ANSI, those are windows version less then 10. RGB and 255 (AnsiBValue) colors are not supported in that case.*/
-                Color::Rgb { r: _, g: _, b: _ } => 0,
-                Color::AnsiValue(_val) => 0,
+                ColorType::Rgb { r: _, g: _, b: _ } => 0,
+                ColorType::AnsiValue(_val) => 0,
             };
         }
     };
 
-    winapi_color.to_string()
+    winapi_color
 }
 
 fn init_console_color() -> Result<()> {
@@ -189,3 +189,21 @@ fn original_console_color() -> u16 {
 
 static GET_ORIGINAL_CONSOLE_COLOR: Once = Once::new();
 static mut ORIGINAL_CONSOLE_COLOR: u16 = 0;
+
+#[cfg(test)]
+mod tests {
+    use crate::color::winapi::{color_value, BG_INTENSITY, BG_RED, FG_INTENSITY, FG_RED};
+    use crate::{ColorType, Colored};
+
+    #[test]
+    fn test_parse_fg_color() {
+        let colored = Colored::Fg(ColorType::Red);
+        assert_eq!(color_value(colored), FG_INTENSITY | FG_RED);
+    }
+
+    #[test]
+    fn test_parse_bg_color() {
+        let colored = Colored::Bg(ColorType::Red);
+        assert_eq!(color_value(colored), BG_INTENSITY | BG_RED);
+    }
+}

@@ -1,166 +1,26 @@
 //! A module that contains all the actions related to the styling of the terminal.
 //! Like applying attributes to text and changing the foreground and background.
 
-use std::clone::Clone;
-use std::env;
-use std::fmt::Display;
-
+pub(crate) mod ansi;
 #[cfg(windows)]
-use crossterm_utils::supports_ansi;
-use crossterm_utils::{impl_display, Command, Result};
+pub(crate) mod winapi;
 
-use super::ansi_color::{self, AnsiColor};
-use super::enums::{Attribute, Color};
-use super::styledobject::StyledObject;
-#[cfg(windows)]
-use super::winapi_color::WinApiColor;
-use super::ITerminalColor;
+use super::ColorType;
+use crossterm_utils::Result;
 
-/// Allows you to style the terminal.
+/// This trait defines the actions that can be performed with terminal colors.
+/// This trait can be implemented so that a concrete implementation of the ITerminalColor can fulfill
+/// the wishes to work on a specific platform.
 ///
-/// # Features:
+/// ## For example:
 ///
-/// - Foreground color (16 base colors)
-/// - Background color (16 base colors)
-/// - 256 color support (Windows 10 and UNIX only)
-/// - RGB support (Windows 10 and UNIX only)
-/// - Text Attributes like: bold, italic, underscore and crossed word ect (Windows 10 and UNIX only)
-///
-/// Check `/examples/` in the library for more specific examples.
-pub struct TerminalColor {
-    #[cfg(windows)]
-    color: Box<(dyn ITerminalColor + Sync + Send)>,
-    #[cfg(unix)]
-    color: AnsiColor,
-}
-
-impl TerminalColor {
-    /// Create new instance whereon color related actions can be performed.
-    pub fn new() -> TerminalColor {
-        #[cfg(windows)]
-        let color = if supports_ansi() {
-            Box::from(AnsiColor::new()) as Box<(dyn ITerminalColor + Sync + Send)>
-        } else {
-            WinApiColor::new() as Box<(dyn ITerminalColor + Sync + Send)>
-        };
-
-        #[cfg(unix)]
-        let color = AnsiColor::new();
-
-        TerminalColor { color }
-    }
-
+/// This trait is implemented for `WinApi` (Windows specific) and `ANSI` (Unix specific),
+/// so that color-related actions can be performed on both UNIX and Windows systems.
+pub trait Color {
     /// Set the foreground color to the given color.
-    pub fn set_fg(&self, color: Color) -> Result<()> {
-        self.color.set_fg(color)
-    }
-
+    fn set_fg(&self, fg_color: ColorType) -> Result<()>;
     /// Set the background color to the given color.
-    pub fn set_bg(&self, color: Color) -> Result<()> {
-        self.color.set_bg(color)
-    }
-
-    /// Reset the terminal colors and attributes to default.
-    pub fn reset(&self) -> Result<()> {
-        self.color.reset()
-    }
-
-    /// Get available color count.
-    ///
-    /// # Remarks
-    ///
-    /// This does not always provide a good result.
-    pub fn available_color_count(&self) -> u16 {
-        env::var("TERM")
-            .map(|x| if x.contains("256color") { 256 } else { 8 })
-            .unwrap_or(8)
-    }
+    fn set_bg(&self, fg_color: ColorType) -> Result<()>;
+    /// Reset the terminal color to default.
+    fn reset(&self) -> Result<()>;
 }
-
-/// Get a `TerminalColor` implementation whereon color related actions can be performed.
-pub fn color() -> TerminalColor {
-    TerminalColor::new()
-}
-
-/// When executed, this command will set the foreground color of the terminal to the given color.
-///
-/// See `crossterm/examples/command.rs` for more information on how to execute commands.
-pub struct SetFg(pub Color);
-
-impl Command for SetFg {
-    type AnsiType = String;
-
-    fn ansi_code(&self) -> Self::AnsiType {
-        ansi_color::get_set_fg_ansi(self.0)
-    }
-
-    #[cfg(windows)]
-    fn execute_winapi(&self) -> Result<()> {
-        WinApiColor::new().set_fg(self.0)
-    }
-}
-
-/// When executed, this command will set the background color of the terminal to the given color.
-///
-/// See `crossterm/examples/command.rs` for more information on how to execute commands.
-pub struct SetBg(pub Color);
-
-impl Command for SetBg {
-    type AnsiType = String;
-
-    fn ansi_code(&self) -> Self::AnsiType {
-        ansi_color::get_set_bg_ansi(self.0)
-    }
-
-    #[cfg(windows)]
-    fn execute_winapi(&self) -> Result<()> {
-        WinApiColor::new().set_fg(self.0)
-    }
-}
-
-/// When executed, this command will set the given attribute to the terminal.
-///
-/// See `crossterm/examples/command.rs` for more information on how to execute commands.
-pub struct SetAttr(pub Attribute);
-
-impl Command for SetAttr {
-    type AnsiType = String;
-
-    fn ansi_code(&self) -> Self::AnsiType {
-        ansi_color::get_set_attr_ansi(self.0)
-    }
-
-    #[cfg(windows)]
-    fn execute_winapi(&self) -> Result<()> {
-        // attributes are not supported by WinAPI.
-        Ok(())
-    }
-}
-
-/// When executed, this command will print the styled font to the terminal.
-///
-/// See `crossterm/examples/command.rs` for more information on how to execute commands.
-pub struct PrintStyledFont<D: Display + Clone>(pub StyledObject<D>);
-
-impl<D> Command for PrintStyledFont<D>
-where
-    D: Display + Clone,
-{
-    type AnsiType = StyledObject<D>;
-
-    fn ansi_code(&self) -> Self::AnsiType {
-        self.0.clone()
-    }
-
-    #[cfg(windows)]
-    fn execute_winapi(&self) -> Result<()> {
-        // attributes are not supported by WinAPI.
-        Ok(())
-    }
-}
-
-impl_display!(for SetFg);
-impl_display!(for SetBg);
-impl_display!(for SetAttr);
-impl_display!(for PrintStyledFont<String>);
-impl_display!(for PrintStyledFont<&'static str>);
