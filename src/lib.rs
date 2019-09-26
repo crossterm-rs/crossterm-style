@@ -181,8 +181,10 @@
 use std::env;
 use std::fmt::Display;
 
+#[cfg(windows)]
+use crossterm_utils::supports_ansi;
 pub use crossterm_utils::{
-    execute, impl_display, queue, supports_ansi, Command, ExecutableCommand, QueueableCommand,
+    execute, impl_display, queue, Command, ExecutableCommand, QueueableCommand,
     Result,
 };
 
