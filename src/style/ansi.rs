@@ -107,7 +107,7 @@ fn color_value(colored: Colored) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::color::ansi::color_value;
+    use crate::style::ansi::color_value;
     use crate::{Color, Colored};
 
     #[test]

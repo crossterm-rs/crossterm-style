@@ -167,6 +167,7 @@ fn color_value(color: Colored) -> u16 {
     winapi_color
 }
 
+/// Initializes the default console color. It will will be skipped if it has already been initialized.
 fn init_console_color() -> Result<()> {
     let mut locked_pos = ORIGINAL_CONSOLE_COLOR.lock().unwrap();
 
@@ -179,7 +180,7 @@ fn init_console_color() -> Result<()> {
     Ok(())
 }
 
-// returns the original console color, make sure to call `init_console_color` before calling this function. Otherwise this function will panic.
+/// Returns the original console color, make sure to call `init_console_color` before calling this function. Otherwise this function will panic.
 fn original_console_color() -> u16 {
     // safe unwrap, initial console color was set with `init_console_color` in `WinApiColor`
     ORIGINAL_CONSOLE_COLOR
@@ -195,7 +196,7 @@ lazy_static! {
 #[cfg(test)]
 mod tests {
     use super::ORIGINAL_CONSOLE_COLOR;
-    use crate::color::winapi::{
+    use crate::style::winapi::{
         color_value, WinApiColor, BG_INTENSITY, BG_RED, FG_INTENSITY, FG_RED,
     };
     use crate::{Color, Colored};
@@ -216,7 +217,8 @@ mod tests {
     fn test_original_console_color_is_set() {
         assert!(ORIGINAL_CONSOLE_COLOR.lock().unwrap().is_none());
 
-        let win_color = WinApiColor::new();
+        // will call `init_console_color`
+        let _ = WinApiColor::new();
 
         assert!(ORIGINAL_CONSOLE_COLOR.lock().unwrap().is_some());
     }
