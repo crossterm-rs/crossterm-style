@@ -186,10 +186,10 @@ pub use crossterm_utils::{
     Result,
 };
 
-use color::ansi::{self, AnsiColor};
+use style::ansi::{self, AnsiColor};
 #[cfg(windows)]
-use color::winapi::WinApiColor;
-use color::Style;
+use style::winapi::WinApiColor;
+use style::Style;
 
 pub use self::enums::{Attribute, Color, Colored};
 pub use self::objectstyle::ObjectStyle;
@@ -198,7 +198,7 @@ pub use self::traits::{Colorize, Styler};
 
 #[macro_use]
 mod macros;
-mod color;
+mod style;
 mod enums;
 mod objectstyle;
 mod styledobject;
