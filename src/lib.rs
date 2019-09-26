@@ -56,7 +56,7 @@
 //!
 //! _setup the basics_
 //! ```no_run
-//! use crossterm_style::{Colored, ColorType, Attribute, Styler, Colorize};
+//! use crossterm_style::{Colored, Color, Attribute, Styler, Colorize};
 //!
 //! fn main() {
 //!     /* your code here */
@@ -76,9 +76,9 @@
 //!
 //! ### Using Enum
 //! ```no_run
-//! use crossterm_style::{Colored, ColorType};
-//! println!("{} Red foreground color", Colored::Fg(ColorType::Red));
-//! println!("{} Blue background color", Colored::Bg(ColorType::Blue));
+//! use crossterm_style::{Colored, Color};
+//! println!("{} Red foreground color", Colored::Fg(Color::Red));
+//! println!("{} Blue background color", Colored::Bg(Color::Blue));
 //! ```
 //! `Colored::Bg` will set the background color, and `Colored::Fg` will set the foreground color to the provided color.
 //! The provided color is of type `Color` and has a bunch of enum values you could choose out.
@@ -102,12 +102,12 @@
 //!
 //! ### RGB
 //! Most UNIX terminals and all Windows 10 consoles are supporting [True color(24-bit)](https://en.wikipedia.org/wiki/Color_depth#True_color_(24-bit)) coloring scheme.
-//! You can set the color of the terminal by using `ColorType::RGB(r,g,b)`.
+//! You can set the color of the terminal by using `Color::RGB(r,g,b)`.
 //!
 //! ```no_run
 //! // custom rgb value (Windows 10 and UNIX systems)
-//! use crossterm_style::{Colored, ColorType};
-//! println!("{}{} 'Light green' text on 'Black' background", Colored::Fg(ColorType::Rgb { r: 0, g: 255, b: 128 }), Colored::Bg(ColorType::Rgb {r: 0, g: 0, b: 0}));
+//! use crossterm_style::{Colored, Color};
+//! println!("{}{} 'Light green' text on 'Black' background", Colored::Fg(Color::Rgb { r: 0, g: 255, b: 128 }), Colored::Bg(Color::Rgb {r: 0, g: 0, b: 0}));
 //! ```
 //! This will print some light green text on black background.
 //!
@@ -117,8 +117,8 @@
 //!
 //! ```
 //! // custom ansi color value (Windows 10 and UNIX systems)
-//! use crossterm_style::{Colored, ColorType};
-//! println!("{} some colored text", Colored::Fg(ColorType::AnsiValue(10)));
+//! use crossterm_style::{Colored, Color};
+//! println!("{} some colored text", Colored::Fg(Color::AnsiValue(10)));
 //! ```
 //!
 //! ## Attributes
@@ -156,13 +156,13 @@
 //! use std::io::{stdout, Write};
 //!
 //! use crossterm_utils::{execute, Result, Output};
-//! use crossterm_style::{SetBg, SetFg, SetAttr, ColorType, Attribute};
+//! use crossterm_style::{SetBg, SetFg, SetAttr, Color, Attribute};
 //!
 //! fn main() -> Result<()> {
 //!     execute!(
 //!         stdout(),
-//!         SetFg(ColorType::Blue),
-//!         SetBg(ColorType::Red),
+//!         SetFg(Color::Blue),
+//!         SetBg(Color::Red),
 //!         Output("Blue text on red background".to_string()),
 //!         SetAttr(Attribute::Reset)
 //!     )
@@ -178,8 +178,8 @@
 
 #![deny(unused_imports)]
 
-use std::fmt::Display;
 use std::env;
+use std::fmt::Display;
 
 pub use crossterm_utils::{
     execute, impl_display, queue, supports_ansi, Command, ExecutableCommand, QueueableCommand,
@@ -189,9 +189,9 @@ pub use crossterm_utils::{
 use color::ansi::{self, AnsiColor};
 #[cfg(windows)]
 use color::winapi::WinApiColor;
-use color::Color;
+use color::Style;
 
-pub use self::enums::{Attribute, ColorType, Colored};
+pub use self::enums::{Attribute, Color, Colored};
 pub use self::objectstyle::ObjectStyle;
 pub use self::styledobject::StyledObject;
 pub use self::traits::{Colorize, Styler};
@@ -200,20 +200,20 @@ pub use self::traits::{Colorize, Styler};
 mod macros;
 mod color;
 mod enums;
-mod traits;
 mod objectstyle;
 mod styledobject;
+mod traits;
 
 /// This could be used to style a type that implements `Display` with colors and attributes.
 ///
 /// # Example
 /// ```no_run
 /// // get a styled object which could be painted to the terminal.
-/// use crossterm_style::{style, ColorType};
+/// use crossterm_style::{style, Color};
 ///
 /// let styled_object = style("Some Blue colored text on black background")
-///     .with(ColorType::Blue)
-///     .on(ColorType::Black);
+///     .with(Color::Blue)
+///     .on(Color::Black);
 ///
 /// // print the styled text 10 * times to the current screen.
 /// for i in 1..10
@@ -230,40 +230,40 @@ where
 
 impl Colorize<&'static str> for &'static str {
     // foreground colors
-    def_str_color!(fg_color: black => ColorType::Black);
-    def_str_color!(fg_color: dark_grey => ColorType::DarkGrey);
-    def_str_color!(fg_color: red => ColorType::Red);
-    def_str_color!(fg_color: dark_red => ColorType::DarkRed);
-    def_str_color!(fg_color: green => ColorType::Green);
-    def_str_color!(fg_color: dark_green => ColorType::DarkGreen);
-    def_str_color!(fg_color: yellow => ColorType::Yellow);
-    def_str_color!(fg_color: dark_yellow => ColorType::DarkYellow);
-    def_str_color!(fg_color: blue => ColorType::Blue);
-    def_str_color!(fg_color: dark_blue => ColorType::DarkBlue);
-    def_str_color!(fg_color: magenta => ColorType::Magenta);
-    def_str_color!(fg_color: dark_magenta => ColorType::DarkMagenta);
-    def_str_color!(fg_color: cyan => ColorType::Cyan);
-    def_str_color!(fg_color: dark_cyan => ColorType::DarkCyan);
-    def_str_color!(fg_color: white => ColorType::White);
-    def_str_color!(fg_color: grey => ColorType::Grey);
+    def_str_color!(fg_color: black => Color::Black);
+    def_str_color!(fg_color: dark_grey => Color::DarkGrey);
+    def_str_color!(fg_color: red => Color::Red);
+    def_str_color!(fg_color: dark_red => Color::DarkRed);
+    def_str_color!(fg_color: green => Color::Green);
+    def_str_color!(fg_color: dark_green => Color::DarkGreen);
+    def_str_color!(fg_color: yellow => Color::Yellow);
+    def_str_color!(fg_color: dark_yellow => Color::DarkYellow);
+    def_str_color!(fg_color: blue => Color::Blue);
+    def_str_color!(fg_color: dark_blue => Color::DarkBlue);
+    def_str_color!(fg_color: magenta => Color::Magenta);
+    def_str_color!(fg_color: dark_magenta => Color::DarkMagenta);
+    def_str_color!(fg_color: cyan => Color::Cyan);
+    def_str_color!(fg_color: dark_cyan => Color::DarkCyan);
+    def_str_color!(fg_color: white => Color::White);
+    def_str_color!(fg_color: grey => Color::Grey);
 
     // background colors
-    def_str_color!(bg_color: on_black => ColorType::Black);
-    def_str_color!(bg_color: on_dark_grey => ColorType::DarkGrey);
-    def_str_color!(bg_color: on_red => ColorType::Red);
-    def_str_color!(bg_color: on_dark_red => ColorType::DarkRed);
-    def_str_color!(bg_color: on_green => ColorType::Green);
-    def_str_color!(bg_color: on_dark_green => ColorType::DarkGreen);
-    def_str_color!(bg_color: on_yellow => ColorType::Yellow);
-    def_str_color!(bg_color: on_dark_yellow => ColorType::DarkYellow);
-    def_str_color!(bg_color: on_blue => ColorType::Blue);
-    def_str_color!(bg_color: on_dark_blue => ColorType::DarkBlue);
-    def_str_color!(bg_color: on_magenta => ColorType::Magenta);
-    def_str_color!(bg_color: on_dark_magenta => ColorType::DarkMagenta);
-    def_str_color!(bg_color: on_cyan => ColorType::Cyan);
-    def_str_color!(bg_color: on_dark_cyan => ColorType::DarkCyan);
-    def_str_color!(bg_color: on_white => ColorType::White);
-    def_str_color!(bg_color: on_grey => ColorType::Grey);
+    def_str_color!(bg_color: on_black => Color::Black);
+    def_str_color!(bg_color: on_dark_grey => Color::DarkGrey);
+    def_str_color!(bg_color: on_red => Color::Red);
+    def_str_color!(bg_color: on_dark_red => Color::DarkRed);
+    def_str_color!(bg_color: on_green => Color::Green);
+    def_str_color!(bg_color: on_dark_green => Color::DarkGreen);
+    def_str_color!(bg_color: on_yellow => Color::Yellow);
+    def_str_color!(bg_color: on_dark_yellow => Color::DarkYellow);
+    def_str_color!(bg_color: on_blue => Color::Blue);
+    def_str_color!(bg_color: on_dark_blue => Color::DarkBlue);
+    def_str_color!(bg_color: on_magenta => Color::Magenta);
+    def_str_color!(bg_color: on_dark_magenta => Color::DarkMagenta);
+    def_str_color!(bg_color: on_cyan => Color::Cyan);
+    def_str_color!(bg_color: on_dark_cyan => Color::DarkCyan);
+    def_str_color!(bg_color: on_white => Color::White);
+    def_str_color!(bg_color: on_grey => Color::Grey);
 }
 
 impl Styler<&'static str> for &'static str {
@@ -299,21 +299,21 @@ impl Styler<&'static str> for &'static str {
 /// ```no_run
 /// // You can replace the following line with `use crossterm::TerminalColor;`
 /// // if you're using the `crossterm` crate with the `style` feature enabled.
-/// use crossterm_style::{Result, TerminalColor, ColorType};
+/// use crossterm_style::{Result, TerminalColor, Color};
 ///
 /// fn main() -> Result<()> {
 ///     let color = TerminalColor::new();
 ///     // set foreground color
-///     color.set_fg(ColorType::Blue)?;
+///     color.set_fg(Color::Blue)?;
 ///     // set background color
-///     color.set_bg(ColorType::Red)?;
+///     color.set_bg(Color::Red)?;
 ///     // reset to the default colors
 ///     color.reset()
 /// }
 /// ```
 pub struct TerminalColor {
     #[cfg(windows)]
-    color: Box<(dyn Color + Sync + Send)>,
+    color: Box<(dyn Style + Sync + Send)>,
     #[cfg(unix)]
     color: AnsiColor,
 }
@@ -323,9 +323,9 @@ impl TerminalColor {
     pub fn new() -> TerminalColor {
         #[cfg(windows)]
         let color = if supports_ansi() {
-            Box::from(AnsiColor::new()) as Box<(dyn Color + Sync + Send)>
+            Box::from(AnsiColor::new()) as Box<(dyn Style + Sync + Send)>
         } else {
-            WinApiColor::new() as Box<(dyn Color + Sync + Send)>
+            WinApiColor::new() as Box<(dyn Style + Sync + Send)>
         };
 
         #[cfg(unix)]
@@ -335,12 +335,12 @@ impl TerminalColor {
     }
 
     /// Set the foreground color to the given color.
-    pub fn set_fg(&self, color: ColorType) -> Result<()> {
+    pub fn set_fg(&self, color: Color) -> Result<()> {
         self.color.set_fg(color)
     }
 
     /// Set the background color to the given color.
-    pub fn set_bg(&self, color: ColorType) -> Result<()> {
+    pub fn set_bg(&self, color: Color) -> Result<()> {
         self.color.set_bg(color)
     }
 
@@ -369,7 +369,7 @@ pub fn color() -> TerminalColor {
 /// When executed, this command will set the foreground color of the terminal to the given color.
 ///
 /// See `crossterm/examples/command.rs` for more information on how to execute commands.
-pub struct SetFg(pub ColorType);
+pub struct SetFg(pub Color);
 
 impl Command for SetFg {
     type AnsiType = String;
@@ -387,7 +387,7 @@ impl Command for SetFg {
 /// When executed, this command will set the background color of the terminal to the given color.
 ///
 /// See `crossterm/examples/command.rs` for more information on how to execute commands.
-pub struct SetBg(pub ColorType);
+pub struct SetBg(pub Color);
 
 impl Command for SetBg {
     type AnsiType = String;

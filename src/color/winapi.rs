@@ -1,14 +1,15 @@
 //! This is a `WinApi` specific implementation for styling related action.
 //! This module is used for non supporting `ANSI` Windows terminals.
 
-use std::sync::Once;
-
 use winapi::um::wincon;
 
 use crossterm_utils::Result;
 use crossterm_winapi::{Console, Handle, HandleType, ScreenBuffer};
+use lazy_static::lazy_static;
 
-use crate::{Color, ColorType, Colored};
+use std::sync::Mutex;
+
+use crate::{Color, Colored, Style};
 
 const FG_GREEN: u16 = wincon::FOREGROUND_GREEN;
 const FG_RED: u16 = wincon::FOREGROUND_RED;
@@ -25,15 +26,14 @@ pub(crate) struct WinApiColor;
 
 impl WinApiColor {
     pub fn new() -> Box<WinApiColor> {
+        init_console_color().unwrap();
+
         Box::from(WinApiColor)
     }
 }
 
-impl Color for WinApiColor {
-    fn set_fg(&self, fg_color: ColorType) -> Result<()> {
-        // init the original color in case it is not set.
-        init_console_color()?;
-
+impl Style for WinApiColor {
+    fn set_fg(&self, fg_color: Color) -> Result<()> {
         let color_value = color_value(Colored::Fg(fg_color));
 
         let screen_buffer = ScreenBuffer::current()?;
@@ -57,10 +57,7 @@ impl Color for WinApiColor {
         Ok(())
     }
 
-    fn set_bg(&self, bg_color: ColorType) -> Result<()> {
-        // init the original color in case it is not set.
-        init_console_color()?;
-
+    fn set_bg(&self, bg_color: Color) -> Result<()> {
         let color_value = color_value(Colored::Bg(bg_color));
 
         let screen_buffer = ScreenBuffer::current()?;
@@ -86,7 +83,9 @@ impl Color for WinApiColor {
 
     fn reset(&self) -> Result<()> {
         // init the original color in case it is not set.
+        // safe unwrap, initial console color was set with `init_console_color`.
         let original_color = original_console_color();
+
         Console::from(Handle::new(HandleType::CurrentOutputHandle)?)
             .set_text_attribute(original_color)?;
 
@@ -94,77 +93,73 @@ impl Color for WinApiColor {
     }
 }
 
-/// This will get the winapi color value from the Color and ColorType struct
+/// This will get the winapi color value from the Color and Color struct
 fn color_value(color: Colored) -> u16 {
     let winapi_color: u16;
 
     match color {
         Colored::Fg(color) => {
             winapi_color = match color {
-                ColorType::Black => 0,
-                ColorType::DarkGrey => FG_INTENSITY,
-                ColorType::Red => FG_INTENSITY | FG_RED,
-                ColorType::DarkRed => FG_RED,
-                ColorType::Green => FG_INTENSITY | FG_GREEN,
-                ColorType::DarkGreen => FG_GREEN,
-                ColorType::Yellow => FG_INTENSITY | FG_GREEN | FG_RED,
-                ColorType::DarkYellow => FG_GREEN | FG_RED,
-                ColorType::Blue => FG_INTENSITY | FG_BLUE,
-                ColorType::DarkBlue => FG_BLUE,
-                ColorType::Magenta => FG_INTENSITY | FG_RED | FG_BLUE,
-                ColorType::DarkMagenta => FG_RED | FG_BLUE,
-                ColorType::Cyan => FG_INTENSITY | FG_GREEN | FG_BLUE,
-                ColorType::DarkCyan => FG_GREEN | FG_BLUE,
-                ColorType::White => FG_RED | FG_GREEN | FG_BLUE,
-                ColorType::Grey => FG_INTENSITY | FG_RED | FG_GREEN | FG_BLUE,
+                Color::Black => 0,
+                Color::DarkGrey => FG_INTENSITY,
+                Color::Red => FG_INTENSITY | FG_RED,
+                Color::DarkRed => FG_RED,
+                Color::Green => FG_INTENSITY | FG_GREEN,
+                Color::DarkGreen => FG_GREEN,
+                Color::Yellow => FG_INTENSITY | FG_GREEN | FG_RED,
+                Color::DarkYellow => FG_GREEN | FG_RED,
+                Color::Blue => FG_INTENSITY | FG_BLUE,
+                Color::DarkBlue => FG_BLUE,
+                Color::Magenta => FG_INTENSITY | FG_RED | FG_BLUE,
+                Color::DarkMagenta => FG_RED | FG_BLUE,
+                Color::Cyan => FG_INTENSITY | FG_GREEN | FG_BLUE,
+                Color::DarkCyan => FG_GREEN | FG_BLUE,
+                Color::White => FG_RED | FG_GREEN | FG_BLUE,
+                Color::Grey => FG_INTENSITY | FG_RED | FG_GREEN | FG_BLUE,
 
-                ColorType::Reset => {
-                    // init the original color in case it is not set.
-                    let mut original_color = original_console_color();
+                Color::Reset => {
+                    // safe unwrap, initial console color was set with `init_console_color`.
+                    let original_color = original_console_color();
 
                     const REMOVE_BG_MASK: u16 = BG_INTENSITY | BG_RED | BG_GREEN | BG_BLUE;
                     // remove all background values from the original color, we don't want to reset those.
-                    original_color &= !(REMOVE_BG_MASK);
-
-                    original_color
+                    (original_color & !(REMOVE_BG_MASK))
                 }
 
                 /* WinApi will be used for systems that do not support ANSI, those are windows version less then 10. RGB and 255 (AnsiBValue) colors are not supported in that case.*/
-                ColorType::Rgb { r: _, g: _, b: _ } => 0,
-                ColorType::AnsiValue(_val) => 0,
+                Color::Rgb { r: _, g: _, b: _ } => 0,
+                Color::AnsiValue(_val) => 0,
             };
         }
         Colored::Bg(color) => {
             winapi_color = match color {
-                ColorType::Black => 0,
-                ColorType::DarkGrey => BG_INTENSITY,
-                ColorType::Red => BG_INTENSITY | BG_RED,
-                ColorType::DarkRed => BG_RED,
-                ColorType::Green => BG_INTENSITY | BG_GREEN,
-                ColorType::DarkGreen => BG_GREEN,
-                ColorType::Yellow => BG_INTENSITY | BG_GREEN | BG_RED,
-                ColorType::DarkYellow => BG_GREEN | BG_RED,
-                ColorType::Blue => BG_INTENSITY | BG_BLUE,
-                ColorType::DarkBlue => BG_BLUE,
-                ColorType::Magenta => BG_INTENSITY | BG_RED | BG_BLUE,
-                ColorType::DarkMagenta => BG_RED | BG_BLUE,
-                ColorType::Cyan => BG_INTENSITY | BG_GREEN | BG_BLUE,
-                ColorType::DarkCyan => BG_GREEN | BG_BLUE,
-                ColorType::White => BG_INTENSITY | BG_RED | BG_GREEN | BG_BLUE,
-                ColorType::Grey => BG_RED | BG_GREEN | BG_BLUE,
+                Color::Black => 0,
+                Color::DarkGrey => BG_INTENSITY,
+                Color::Red => BG_INTENSITY | BG_RED,
+                Color::DarkRed => BG_RED,
+                Color::Green => BG_INTENSITY | BG_GREEN,
+                Color::DarkGreen => BG_GREEN,
+                Color::Yellow => BG_INTENSITY | BG_GREEN | BG_RED,
+                Color::DarkYellow => BG_GREEN | BG_RED,
+                Color::Blue => BG_INTENSITY | BG_BLUE,
+                Color::DarkBlue => BG_BLUE,
+                Color::Magenta => BG_INTENSITY | BG_RED | BG_BLUE,
+                Color::DarkMagenta => BG_RED | BG_BLUE,
+                Color::Cyan => BG_INTENSITY | BG_GREEN | BG_BLUE,
+                Color::DarkCyan => BG_GREEN | BG_BLUE,
+                Color::White => BG_INTENSITY | BG_RED | BG_GREEN | BG_BLUE,
+                Color::Grey => BG_RED | BG_GREEN | BG_BLUE,
 
-                ColorType::Reset => {
-                    // init the original color in case it is not set.
-                    let mut original_color = original_console_color();
+                Color::Reset => {
+                    let original_color = original_console_color();
 
                     const REMOVE_FG_MASK: u16 = FG_INTENSITY | FG_RED | FG_GREEN | FG_BLUE;
                     // remove all foreground values from the original color, we don't want to reset those.
-                    original_color &= !(REMOVE_FG_MASK);
-                    original_color
+                    (original_color & !(REMOVE_FG_MASK))
                 }
                 /* WinApi will be used for systems that do not support ANSI, those are windows version less then 10. RGB and 255 (AnsiBValue) colors are not supported in that case.*/
-                ColorType::Rgb { r: _, g: _, b: _ } => 0,
-                ColorType::AnsiValue(_val) => 0,
+                Color::Rgb { r: _, g: _, b: _ } => 0,
+                Color::AnsiValue(_val) => 0,
             };
         }
     };
@@ -173,37 +168,56 @@ fn color_value(color: Colored) -> u16 {
 }
 
 fn init_console_color() -> Result<()> {
-    let screen_buffer = ScreenBuffer::current()?;
+    let mut locked_pos = ORIGINAL_CONSOLE_COLOR.lock().unwrap();
 
-    let attr = screen_buffer.info()?.attributes();
+    if *locked_pos == None {
+        let screen_buffer = ScreenBuffer::current()?;
+        let attr = screen_buffer.info()?.attributes();
+        *locked_pos = Some(attr);
+    }
 
-    GET_ORIGINAL_CONSOLE_COLOR.call_once(|| {
-        unsafe { ORIGINAL_CONSOLE_COLOR = attr };
-    });
     Ok(())
 }
 
+// returns the original console color, make sure to call `init_console_color` before calling this function. Otherwise this function will panic.
 fn original_console_color() -> u16 {
-    return unsafe { ORIGINAL_CONSOLE_COLOR };
+    // safe unwrap, initial console color was set with `init_console_color` in `WinApiColor`
+    ORIGINAL_CONSOLE_COLOR
+        .lock()
+        .unwrap()
+        .expect("Initial console color not set")
 }
 
-static GET_ORIGINAL_CONSOLE_COLOR: Once = Once::new();
-static mut ORIGINAL_CONSOLE_COLOR: u16 = 0;
+lazy_static! {
+    static ref ORIGINAL_CONSOLE_COLOR: Mutex<Option<u16>> = Mutex::new(None);
+}
 
 #[cfg(test)]
 mod tests {
-    use crate::color::winapi::{color_value, BG_INTENSITY, BG_RED, FG_INTENSITY, FG_RED};
-    use crate::{ColorType, Colored};
+    use super::ORIGINAL_CONSOLE_COLOR;
+    use crate::color::winapi::{
+        color_value, WinApiColor, BG_INTENSITY, BG_RED, FG_INTENSITY, FG_RED,
+    };
+    use crate::{Color, Colored};
 
     #[test]
     fn test_parse_fg_color() {
-        let colored = Colored::Fg(ColorType::Red);
+        let colored = Colored::Fg(Color::Red);
         assert_eq!(color_value(colored), FG_INTENSITY | FG_RED);
     }
 
     #[test]
     fn test_parse_bg_color() {
-        let colored = Colored::Bg(ColorType::Red);
+        let colored = Colored::Bg(Color::Red);
         assert_eq!(color_value(colored), BG_INTENSITY | BG_RED);
+    }
+
+    #[test]
+    fn test_original_console_color_is_set() {
+        assert!(ORIGINAL_CONSOLE_COLOR.lock().unwrap().is_none());
+
+        let win_color = WinApiColor::new();
+
+        assert!(ORIGINAL_CONSOLE_COLOR.lock().unwrap().is_some());
     }
 }

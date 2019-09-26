@@ -5,7 +5,7 @@ pub(crate) mod ansi;
 #[cfg(windows)]
 pub(crate) mod winapi;
 
-use super::ColorType;
+use super::Color;
 use crossterm_utils::Result;
 
 /// This trait defines the actions that can be performed with terminal colors.
@@ -16,11 +16,11 @@ use crossterm_utils::Result;
 ///
 /// This trait is implemented for `WinApi` (Windows specific) and `ANSI` (Unix specific),
 /// so that color-related actions can be performed on both UNIX and Windows systems.
-pub(crate) trait Color : Sync + Send {
+pub(crate) trait Style: Sync + Send {
     /// Set the foreground color to the given color.
-    fn set_fg(&self, fg_color: ColorType) -> Result<()>;
+    fn set_fg(&self, fg_color: Color) -> Result<()>;
     /// Set the background color to the given color.
-    fn set_bg(&self, fg_color: ColorType) -> Result<()>;
+    fn set_bg(&self, fg_color: Color) -> Result<()>;
     /// Reset the terminal color to default.
     fn reset(&self) -> Result<()>;
 }

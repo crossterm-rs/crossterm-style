@@ -5,7 +5,7 @@ use std::result;
 
 use crossterm_utils::{csi, queue};
 
-use super::{color, Attribute, ColorType, Colorize, ObjectStyle, SetBg, SetFg, Styler};
+use super::{color, Attribute, Color, Colorize, ObjectStyle, SetBg, SetFg, Styler};
 
 /// Contains both the style and the content which can be styled.
 #[derive(Clone)]
@@ -21,7 +21,7 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
     ///
     /// This methods consumes 'self', and works like a builder.
     /// You can do: `with().on().attr()`
-    pub fn with(mut self, foreground_color: ColorType) -> StyledObject<D> {
+    pub fn with(mut self, foreground_color: Color) -> StyledObject<D> {
         self.object_style = self.object_style.set_fg(foreground_color);
         self
     }
@@ -32,7 +32,7 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
     ///
     /// This methods consumes 'self', and works like a builder.
     /// You can do: `with().on().attr()`
-    pub fn on(mut self, background_color: ColorType) -> StyledObject<D> {
+    pub fn on(mut self, background_color: Color) -> StyledObject<D> {
         self.object_style = self.object_style.set_bg(background_color);
         self
     }
@@ -80,40 +80,40 @@ impl<D: Display + Clone> Display for StyledObject<D> {
 
 impl<D: Display + Clone> Colorize<D> for StyledObject<D> {
     // foreground colors
-    def_color!(fg_color: black => ColorType::Black);
-    def_color!(fg_color: dark_grey => ColorType::DarkGrey);
-    def_color!(fg_color: red => ColorType::Red);
-    def_color!(fg_color: dark_red => ColorType::DarkRed);
-    def_color!(fg_color: green => ColorType::Green);
-    def_color!(fg_color: dark_green => ColorType::DarkGreen);
-    def_color!(fg_color: yellow => ColorType::Yellow);
-    def_color!(fg_color: dark_yellow => ColorType::DarkYellow);
-    def_color!(fg_color: blue => ColorType::Blue);
-    def_color!(fg_color: dark_blue => ColorType::DarkBlue);
-    def_color!(fg_color: magenta => ColorType::Magenta);
-    def_color!(fg_color: dark_magenta => ColorType::DarkMagenta);
-    def_color!(fg_color: cyan => ColorType::Cyan);
-    def_color!(fg_color: dark_cyan => ColorType::DarkCyan);
-    def_color!(fg_color: white => ColorType::White);
-    def_color!(fg_color: grey => ColorType::Grey);
+    def_color!(fg_color: black => Color::Black);
+    def_color!(fg_color: dark_grey => Color::DarkGrey);
+    def_color!(fg_color: red => Color::Red);
+    def_color!(fg_color: dark_red => Color::DarkRed);
+    def_color!(fg_color: green => Color::Green);
+    def_color!(fg_color: dark_green => Color::DarkGreen);
+    def_color!(fg_color: yellow => Color::Yellow);
+    def_color!(fg_color: dark_yellow => Color::DarkYellow);
+    def_color!(fg_color: blue => Color::Blue);
+    def_color!(fg_color: dark_blue => Color::DarkBlue);
+    def_color!(fg_color: magenta => Color::Magenta);
+    def_color!(fg_color: dark_magenta => Color::DarkMagenta);
+    def_color!(fg_color: cyan => Color::Cyan);
+    def_color!(fg_color: dark_cyan => Color::DarkCyan);
+    def_color!(fg_color: white => Color::White);
+    def_color!(fg_color: grey => Color::Grey);
 
     // background colors
-    def_color!(bg_color: on_black => ColorType::Black);
-    def_color!(bg_color: on_dark_grey => ColorType::DarkGrey);
-    def_color!(bg_color: on_red => ColorType::Red);
-    def_color!(bg_color: on_dark_red => ColorType::DarkRed);
-    def_color!(bg_color: on_green => ColorType::Green);
-    def_color!(bg_color: on_dark_green => ColorType::DarkGreen);
-    def_color!(bg_color: on_yellow => ColorType::Yellow);
-    def_color!(bg_color: on_dark_yellow => ColorType::DarkYellow);
-    def_color!(bg_color: on_blue => ColorType::Blue);
-    def_color!(bg_color: on_dark_blue => ColorType::DarkBlue);
-    def_color!(bg_color: on_magenta => ColorType::Magenta);
-    def_color!(bg_color: on_dark_magenta => ColorType::DarkMagenta);
-    def_color!(bg_color: on_cyan => ColorType::Cyan);
-    def_color!(bg_color: on_dark_cyan => ColorType::DarkCyan);
-    def_color!(bg_color: on_white => ColorType::White);
-    def_color!(bg_color: on_grey => ColorType::Grey);
+    def_color!(bg_color: on_black => Color::Black);
+    def_color!(bg_color: on_dark_grey => Color::DarkGrey);
+    def_color!(bg_color: on_red => Color::Red);
+    def_color!(bg_color: on_dark_red => Color::DarkRed);
+    def_color!(bg_color: on_green => Color::Green);
+    def_color!(bg_color: on_dark_green => Color::DarkGreen);
+    def_color!(bg_color: on_yellow => Color::Yellow);
+    def_color!(bg_color: on_dark_yellow => Color::DarkYellow);
+    def_color!(bg_color: on_blue => Color::Blue);
+    def_color!(bg_color: on_dark_blue => Color::DarkBlue);
+    def_color!(bg_color: on_magenta => Color::Magenta);
+    def_color!(bg_color: on_dark_magenta => Color::DarkMagenta);
+    def_color!(bg_color: on_cyan => Color::Cyan);
+    def_color!(bg_color: on_dark_cyan => Color::DarkCyan);
+    def_color!(bg_color: on_white => Color::White);
+    def_color!(bg_color: on_grey => Color::Grey);
 }
 
 impl<D: Display + Clone> Styler<D> for StyledObject<D> {
@@ -132,27 +132,22 @@ impl<D: Display + Clone> Styler<D> for StyledObject<D> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Attribute, ColorType, ObjectStyle};
+    use crate::{Attribute, Color, ObjectStyle};
 
     #[test]
     fn test_set_fg_bg_add_attr() {
-        let mut object_style = ObjectStyle::new()
-            .set_fg(ColorType::Blue)
-            .set_bg(ColorType::Red);
+        let mut object_style = ObjectStyle::new().set_fg(Color::Blue).set_bg(Color::Red);
         object_style.add_attr(Attribute::Reset);
 
         let mut styled_object = object_style.apply_to("test");
 
         styled_object = styled_object
-            .with(ColorType::Green)
-            .on(ColorType::Magenta)
+            .with(Color::Green)
+            .on(Color::Magenta)
             .attr(Attribute::NoItalic);
 
-        assert_eq!(styled_object.object_style.fg_color, Some(ColorType::Green));
-        assert_eq!(
-            styled_object.object_style.bg_color,
-            Some(ColorType::Magenta)
-        );
+        assert_eq!(styled_object.object_style.fg_color, Some(Color::Green));
+        assert_eq!(styled_object.object_style.bg_color, Some(Color::Magenta));
         assert_eq!(styled_object.object_style.attrs.len(), 2);
         assert_eq!(styled_object.object_style.attrs[0], Attribute::Reset);
         assert_eq!(styled_object.object_style.attrs[1], Attribute::NoItalic);
