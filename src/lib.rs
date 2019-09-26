@@ -184,8 +184,7 @@ use std::fmt::Display;
 #[cfg(windows)]
 use crossterm_utils::supports_ansi;
 pub use crossterm_utils::{
-    execute, impl_display, queue, Command, ExecutableCommand, QueueableCommand,
-    Result,
+    execute, impl_display, queue, Command, ExecutableCommand, QueueableCommand, Result,
 };
 
 use style::ansi::{self, AnsiColor};
@@ -200,9 +199,9 @@ pub use self::traits::{Colorize, Styler};
 
 #[macro_use]
 mod macros;
-mod style;
 mod enums;
 mod objectstyle;
+mod style;
 mod styledobject;
 mod traits;
 
