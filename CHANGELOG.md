@@ -1,3 +1,7 @@
+# Version master
+- Added unit tests 
+- Restructured files
+
 # Version 0.5.1
 
 - Maintenance release only
