@@ -27,13 +27,13 @@ impl ObjectStyle {
     }
 
     /// Set the background color of `ObjectStyle` to the passed color.
-    pub fn set_bg(mut self, color: Color) -> ObjectStyle {
+    pub fn bg(mut self, color: Color) -> ObjectStyle {
         self.bg_color = Some(color);
         self
     }
 
     /// Set the foreground color of `ObjectStyle` to the passed color.
-    pub fn set_fg(mut self, color: Color) -> ObjectStyle {
+    pub fn fg(mut self, color: Color) -> ObjectStyle {
         self.fg_color = Some(color);
         self
     }
@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn test_set_fg_bg_add_attr() {
-        let mut object_style = ObjectStyle::new().set_fg(Color::Blue).set_bg(Color::Red);
+        let mut object_style = ObjectStyle::new().fg(Color::Blue).bg(Color::Red);
         object_style.add_attr(Attribute::Reset);
 
         assert_eq!(object_style.fg_color, Some(Color::Blue));
@@ -60,7 +60,7 @@ mod tests {
 
     #[test]
     fn test_apply_object_style_to_text() {
-        let mut object_style = ObjectStyle::new().set_fg(Color::Blue).set_bg(Color::Red);
+        let mut object_style = ObjectStyle::new().fg(Color::Blue).bg(Color::Red);
         object_style.add_attr(Attribute::Reset);
 
         let styled_object = object_style.apply_to("test");

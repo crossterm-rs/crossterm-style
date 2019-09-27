@@ -22,7 +22,7 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
     /// This methods consumes 'self', and works like a builder.
     /// You can do: `with().on().attr()`
     pub fn with(mut self, foreground_color: Color) -> StyledObject<D> {
-        self.object_style = self.object_style.set_fg(foreground_color);
+        self.object_style = self.object_style.fg(foreground_color);
         self
     }
 
@@ -33,7 +33,7 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
     /// This methods consumes 'self', and works like a builder.
     /// You can do: `with().on().attr()`
     pub fn on(mut self, background_color: Color) -> StyledObject<D> {
-        self.object_style = self.object_style.set_bg(background_color);
+        self.object_style = self.object_style.bg(background_color);
         self
     }
 
@@ -136,7 +136,7 @@ mod tests {
 
     #[test]
     fn test_set_fg_bg_add_attr() {
-        let mut object_style = ObjectStyle::new().set_fg(Color::Blue).set_bg(Color::Red);
+        let mut object_style = ObjectStyle::new().fg(Color::Blue).bg(Color::Red);
         object_style.add_attr(Attribute::Reset);
 
         let mut styled_object = object_style.apply_to("test");

@@ -1,12 +1,13 @@
 //! A module that contains all the actions related to the styling of the terminal.
 //! Like applying attributes to text and changing the foreground and background.
 
+use crossterm_utils::Result;
+
+use super::Color;
+
 pub(crate) mod ansi;
 #[cfg(windows)]
 pub(crate) mod winapi;
-
-use super::Color;
-use crossterm_utils::Result;
 
 /// This trait defines the actions that can be performed with terminal colors.
 /// This trait can be implemented so that a concrete implementation of the ITerminalColor can fulfill

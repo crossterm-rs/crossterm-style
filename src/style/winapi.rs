@@ -1,13 +1,13 @@
 //! This is a `WinApi` specific implementation for styling related action.
 //! This module is used for non supporting `ANSI` Windows terminals.
 
-use winapi::um::wincon;
+use std::sync::Mutex;
 
 use crossterm_utils::Result;
 use crossterm_winapi::{Console, Handle, HandleType, ScreenBuffer};
-use lazy_static::lazy_static;
+use winapi::um::wincon;
 
-use std::sync::Mutex;
+use lazy_static::lazy_static;
 
 use crate::{Color, Colored, Style};
 
@@ -171,7 +171,7 @@ fn color_value(color: Colored) -> u16 {
 fn init_console_color() -> Result<()> {
     let mut locked_pos = ORIGINAL_CONSOLE_COLOR.lock().unwrap();
 
-    if *locked_pos == None {
+    if locked_pos.is_none() {
         let screen_buffer = ScreenBuffer::current()?;
         let attr = screen_buffer.info()?.attributes();
         *locked_pos = Some(attr);
@@ -195,11 +195,12 @@ lazy_static! {
 
 #[cfg(test)]
 mod tests {
-    use super::ORIGINAL_CONSOLE_COLOR;
     use crate::style::winapi::{
         color_value, WinApiColor, BG_INTENSITY, BG_RED, FG_INTENSITY, FG_RED,
     };
     use crate::{Color, Colored};
+
+    use super::ORIGINAL_CONSOLE_COLOR;
 
     #[test]
     fn test_parse_fg_color() {

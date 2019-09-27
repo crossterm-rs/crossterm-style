@@ -21,7 +21,7 @@
 
 - Introduced more `Attributes`
 - Introduced easier ways to style text [issue 87](https://github.com/crossterm-rs/crossterm/issues/87).
-- Removed `Color` since it was unnecessary.
+- Removed `ColorType` since it was unnecessary.
 
 # Version 0.1.0
 
