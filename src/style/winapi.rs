@@ -91,10 +91,10 @@ impl Style for WinApiColor {
     }
 }
 
-impl Into<u16> for Colored {
+impl From<Colored> for u16 {
     /// Returns the WinApi color value (u16) from the `Colored` struct.
-    fn into(self) -> u16 {
-        match self {
+    fn from(colored: Colored) -> Self {
+        match colored {
             Colored::Fg(color) => {
                 match color {
                     Color::Black => 0,

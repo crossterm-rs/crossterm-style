@@ -376,7 +376,7 @@ impl Command for SetFg {
     type AnsiType = String;
 
     fn ansi_code(&self) -> Self::AnsiType {
-        ansi::set_fg_sequence(self.0)
+        ansi::set_fg_csi_sequence(self.0)
     }
 
     #[cfg(windows)]

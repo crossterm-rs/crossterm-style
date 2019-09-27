@@ -5,7 +5,7 @@ use crossterm_utils::{csi, write_cout, Result};
 
 use crate::{Attribute, Color, Colored, Style};
 
-pub(crate) fn set_fg_sequence(fg_color: Color) -> String {
+pub(crate) fn set_fg_csi_sequence(fg_color: Color) -> String {
     format!(csi!("{}m"), Into::<String>::into(Colored::Fg(fg_color)))
 }
 
@@ -45,13 +45,13 @@ impl Style for AnsiColor {
     }
 }
 
-impl Into<String> for Colored {
-    fn into(self) -> String {
+impl From<Colored> for String {
+    fn from(colored: Colored) -> Self {
         let mut ansi_value = String::new();
 
         let color;
 
-        match self {
+        match colored {
             Colored::Fg(new_color) => {
                 if new_color == Color::Reset {
                     ansi_value.push_str("39");
