@@ -1,6 +1,8 @@
 # Version master
 - Added unit tests 
 - Restructured files
+- Removed unsafe static code
+- Improved documentation and added book page to lib.rs
 
 # Version 0.5.1
 
