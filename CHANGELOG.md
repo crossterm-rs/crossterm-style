@@ -4,6 +4,9 @@
 - Restructured files
 - Removed unsafe static code
 - Improved documentation and added book page to lib.rs
+- Fixed bug with `SetBg` command, WinApi logic
+- Fixed bug with `StyledObject`, used stdout for resetting terminal color
+- Introduced `ResetColor` command
 
 # Version 0.5.1
 
