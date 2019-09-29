@@ -53,7 +53,6 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
 
 impl<D: Display + Clone> Display for StyledObject<D> {
     fn fmt(&self, f: &mut Formatter) -> result::Result<(), fmt::Error> {
-        let colored_terminal = color();
         let mut reset = false;
 
         if let Some(bg) = self.object_style.bg_color {
@@ -74,7 +73,6 @@ impl<D: Display + Clone> Display for StyledObject<D> {
 
         if reset {
             queue!(f, ResetColor).map_err(|_| fmt::Error)?;
-            colored_terminal.reset().map_err(|_| fmt::Error)?;
         }
 
         Ok(())
