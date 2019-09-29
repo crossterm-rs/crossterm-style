@@ -30,7 +30,7 @@ impl AnsiColor {
 
 impl Style for AnsiColor {
     fn set_fg(&self, fg_color: Color) -> Result<()> {
-        write_cout!(set_fg_sequence(fg_color))?;
+        write_cout!(set_fg_csi_sequence(fg_color))?;
         Ok(())
     }
 
