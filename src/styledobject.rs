@@ -21,8 +21,7 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
     ///
     /// # Remarks
     ///
-    /// This methods consumes 'self', and works like a builder.
-    /// You can do: `with().on().attr()`
+    /// This methods consumes 'self', and works like a builder, like: `with().on().attr()`.
     pub fn with(mut self, foreground_color: Color) -> StyledObject<D> {
         self.object_style = self.object_style.fg(foreground_color);
         self
@@ -32,8 +31,7 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
     ///
     /// # Remarks
     ///
-    /// This methods consumes 'self', and works like a builder.
-    /// You can do: `with().on().attr()`
+    /// This methods consumes 'self', and works like a builder, like: `with().on().attr()`.
     pub fn on(mut self, background_color: Color) -> StyledObject<D> {
         self.object_style = self.object_style.bg(background_color);
         self
@@ -43,8 +41,7 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
     ///
     /// # Remarks
     ///
-    /// This methods consumes 'self', and works like a builder.
-    /// You can do: `with().on().attr()`
+    /// This methods consumes 'self', and works like a builder, like: `with().on().attr()`.
     pub fn attr(mut self, attr: Attribute) -> StyledObject<D> {
         self.object_style.add_attr(attr);
         self

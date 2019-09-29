@@ -4,7 +4,7 @@ use crate::StyledObject;
 
 /// Provides a set of methods to color any type implementing `Display` + `Clone`.
 ///
-/// This trait has been implemented for `&static str` and `StyledObject`, you can invoke these methods there.
+/// This trait is implemented for `&static str` and `StyledObject`, you can invoke these methods there.
 ///
 /// # Example
 ///
@@ -52,7 +52,7 @@ pub trait Colorize<D: Display + Clone> {
 
 /// Provides a set of methods to style any type implementing `Display` with attributes.
 ///
-/// This trait has been implemented for `&static str` and `StyledObject`, you can invoke these methods there.
+/// This trait is implemented for `&static str` and `StyledObject`, you can invoke these methods there.
 ///
 /// # Example
 ///

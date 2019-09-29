@@ -4,9 +4,9 @@
 use std::sync::Mutex;
 
 use crossterm_utils::Result;
-use crossterm_winapi::{Console, Handle, HandleType, ScreenBuffer};
 use winapi::um::wincon;
 
+use crossterm_winapi::{Console, Handle, HandleType, ScreenBuffer};
 use lazy_static::lazy_static;
 
 use crate::{Color, Colored, Style};
