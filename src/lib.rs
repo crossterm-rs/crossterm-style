@@ -187,7 +187,7 @@ pub use crossterm_utils::{
     execute, impl_display, queue, Command, ExecutableCommand, QueueableCommand, Result,
 };
 
-use style::ansi::{self, };
+use style::ansi::{self, AnsiColor};
 #[cfg(windows)]
 use style::winapi::WinApiColor;
 use style::Style;
@@ -324,8 +324,7 @@ impl TerminalColor {
     pub fn new() -> TerminalColor {
         #[cfg(windows)]
         let color = if supports_ansi() {
-//            Box::from(AnsiColor::new()) as Box<(dyn Style + Sync + Send)>
-            WinApiColor::new() as Box<(dyn Style + Sync + Send)>
+            Box::from(AnsiColor::new()) as Box<(dyn Style + Sync + Send)>
         } else {
             WinApiColor::new() as Box<(dyn Style + Sync + Send)>
         };
