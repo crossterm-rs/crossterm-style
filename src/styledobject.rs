@@ -3,9 +3,11 @@
 use std::fmt::{self, Display, Formatter};
 use std::result;
 
-use crossterm_utils::{csi, queue};
+use crossterm_utils::queue;
 
-use super::{color, Attribute, Color, Colorize, ObjectStyle, SetBg, SetFg, Styler};
+use crate::{
+    color, Attribute, Color, Colorize, ObjectStyle, ResetColor, SetAttr, SetBg, SetFg, Styler,
+};
 
 /// Contains both the style and the content which can be styled.
 #[derive(Clone)]
@@ -64,13 +66,14 @@ impl<D: Display + Clone> Display for StyledObject<D> {
         }
 
         for attr in self.object_style.attrs.iter() {
-            fmt::Display::fmt(&format!(csi!("{}m"), *attr as i16), f)?;
+            queue!(f, SetAttr(*attr)).map_err(|_| fmt::Error)?;
             reset = true;
         }
 
         fmt::Display::fmt(&self.content, f)?;
 
         if reset {
+            queue!(f, ResetColor).map_err(|_| fmt::Error)?;
             colored_terminal.reset().map_err(|_| fmt::Error)?;
         }
 

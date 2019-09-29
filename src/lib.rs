@@ -439,8 +439,25 @@ where
 
     #[cfg(windows)]
     fn execute_winapi(&self) -> Result<()> {
-        // attributes are not supported by WinAPI.
         Ok(())
+    }
+}
+
+/// When executed, this command will reset the console colors back to default
+///
+/// See `crossterm/examples/command.rs` for more information on how to execute commands.
+pub struct ResetColor;
+
+impl Command for ResetColor {
+    type AnsiType = String;
+
+    fn ansi_code(&self) -> Self::AnsiType {
+        ansi::RESET_CSI_SEQUENCE.to_string()
+    }
+
+    #[cfg(windows)]
+    fn execute_winapi(&self) -> Result<()> {
+        WinApiColor::new().reset()
     }
 }
 
