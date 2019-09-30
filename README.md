@@ -2,9 +2,9 @@
 
 # Crossterm Style
 
-This crate allows you to style the terminal cross-platform. 
-It supports all UNIX and windows terminals down to windows 7 (not all terminals are tested see
-[Tested Terminals](#tested-terminals) for more info)
+This crate allows you to work with the terminal colors and text attributes. It supports all UNIX
+and Windows terminals down to Windows 7 (not all terminals are tested, see the
+[Tested Terminals](https://github.com/crossterm-rs/crossterm/blob/master/README.md#tested-terminals) for more info).
 
 `crossterm_style` is a sub-crate of the [crossterm](https://crates.io/crates/crossterm) crate. You can use it
 directly, but it's **highly recommended** to use the [crossterm](https://crates.io/crates/crossterm) crate with
@@ -19,62 +19,42 @@ for more info).
 
 Issues in this repository are disabled for the same reason. Please, report all issues in the
 [crossterm-rs/crossterm](https://github.com/crossterm-rs/crossterm/issues) repository.
- 
-## Table of contents:
-- [Getting started](#getting-started)
-- [Useful links](#useful-links)
-- [Features](#features)
-- [Examples](#examples)
-- [Tested Terminals](#tested-terminals)
-- [Authors](#authors)
-- [License](#license)
-
-## Getting Started
-
-All examples of how `crossterm_style` works can be found in the [examples](https://github.com/crossterm-rs/examples)
-repository. Add the `crossterm_style` package to your `Cargo.toml` file.
-
-```
-[dependencies]
-crossterm_style = "0.5"
-```
-
-And import the `crossterm_style` modules you want to use.
-
-```rust  
-pub use crossterm_style::{color, style, Attribute, Color, ObjectStyle, StyledObject, TerminalColor, Colorize, Styler};
-```
-
-### Useful Links
-
-- [Documentation](https://docs.rs/crossterm_input/)
-- [Crates.io](https://crates.io/crates/crossterm_input)
-- [Book](https://crossterm-rs.github.io/crossterm/docs/styling.html)
-- [Examples](https://github.com/crossterm-rs/examples)
 
 ## Features
 
-These are the features of this crate:
-
 - Cross-platform
 - Multi-threaded (send, sync)
-- Detailed Documentation
-- Few Dependencies
+- Detailed documentation
+- Few dependencies
 - Styled output
-    - Foreground Color (16 base colors)
-    - Background Color (16 base colors)
-    - 256 (ANSI) Color Support (Windows 10 and UNIX Only)
-    - RGB Color Support (Windows 10 and UNIX only)
-    - Text Attributes: bold, italic, underscore and crossed word and [more](https://crossterm-rs.github.io/crossterm/docs/styling.html#attributes) (Windows 10 and UNIX only)
+  - Foreground color (16 base colors)
+  - Background color (16 base colors)
+  - 256 (ANSI) color support (Windows 10 and UNIX only)
+  - RGB color support (Windows 10 and UNIX only)
+  - Text attributes
+    - Bold, italic, underscore and crossed word
+    - [More attributes](https://crossterm-rs.github.io/crossterm/docs/styling.html#attributes) (Windows 10 and UNIX only)
 
-## Examples
+## Getting Started
 
-The [examples](https://github.com/crossterm-rs/examples) repository has more complete and verbose examples.
+<details>
+<summary>
+Click to show Cargo.toml.
+</summary>
 
-_style text with attributes_
+```toml
+[dependencies]
+# All crossterm features are enabled by default.
+crossterm = "0.11"
+```
+
+</details>
+<p></p>
+
+### Attributes
 
 ```rust
-use crossterm_style::{Colored, Color, Colorize, Styler, Attribute};
+use crossterm::{Colored, Color, Colorize, Styler, Attribute};
 
 // pass any `Attribute` value to the formatting braces.
 println!("{} Underlined {} No Underline", Attribute::Underlined, Attribute::NoUnderline);
@@ -87,10 +67,10 @@ println!("{}", styled_text);
 let styled_text = style("Bold Underlined").bold().underlined();
 ```
 
-_style text with colors_
+### Colors
 
 ```rust
-use crossterm_style::{Colored, Color, Colorize};
+use crossterm::{Colored, Color, Colorize};
 
 println!("{} Red foreground color", Colored::Fg(Color::Red));
 println!("{} Blue background color", Colored::Bg(Color::Blue));
@@ -103,9 +83,11 @@ println!("{}", styled_text);
 let styled_text = style("Bold Underlined").with(Color::Red).on(Color::Blue);
 ```
 
-_style text with RGB and ANSI Value_
+### RGB Colors and ANSI Values
 
 ```rust
+use crossterm::{Colored, Color, Colorize};
+
 // custom rgb value (Windows 10 and UNIX systems)
 println!("{} some colored text", Colored::Fg(Color::Rgb {
     r: 10,
@@ -117,21 +99,11 @@ println!("{} some colored text", Colored::Fg(Color::Rgb {
 println!("{} some colored text", Colored::Fg(Color::AnsiValue(10)));
 ```
 
-## Tested terminals
+## Other Resources
 
-- Windows Powershell
-    - Windows 10 (pro)
-- Windows CMD
-    - Windows 10 (pro)
-    - Windows 8.1 (N)
-- Ubuntu Desktop Terminal
-    - Ubuntu 17.10
-- (Arch, Manjaro) KDE Konsole
-- Linux Mint
-
-This crate supports all Unix terminals and windows terminals down to Windows 7 but not all of them have been tested.
-If you have used this library for a terminal other than the above list without issues feel free to add it
-to the above list, I really would appreciate it.
+- [API documentation](https://docs.rs/crossterm_style/) (with other examples)
+- [Examples repository](https://github.com/crossterm-rs/examples)
+- [The Book](https://crossterm-rs.github.io/crossterm/docs/index.html)
 
 ## Authors
 
@@ -139,7 +111,7 @@ to the above list, I really would appreciate it.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
 
 [s1]: https://img.shields.io/crates/v/crossterm_style.svg
 [l1]: https://crates.io/crates/crossterm_style

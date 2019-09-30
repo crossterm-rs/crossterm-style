@@ -4,45 +4,90 @@ use std::str::FromStr;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-/// Enum with the different colors to color your test and terminal.
+/// Represents a color.
+///
+/// # Platform-specific Notes
+///
+/// The following list of 16 base colors are available for almost all terminals (Windows 7 and 8 included).
+///
+/// | Light | Dark |
+/// | :--| :--   |
+/// | `Grey` | `Black` |
+/// | `Red` | `DarkRed` |
+/// | `Green` | `DarkGreen` |
+/// | `Yellow` | `DarkYellow` |
+/// | `Blue` | `DarkBlue` |
+/// | `Magenta` | `DarkMagenta` |
+/// | `Cyan` | `DarkCyan` |
+/// | `White` | `DarkWhite` |
+///
+/// Most UNIX terminals and Windows 10 consoles support additional colors.
+/// See [`Color::Rgb`](enum.Color.html#variant.Rgb) or [`Color::AnsiValue`](enum.Color.html#variant.AnsiValue) for
+/// more info.
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum Color {
-    // This resets the color.
+    /// Resets the terminal color.
     Reset,
 
+    /// Black color.
     Black,
+
+    /// Dark grey color.
     DarkGrey,
 
+    /// Light red color.
     Red,
+
+    /// Dark red color.
     DarkRed,
 
+    /// Light green color.
     Green,
+
+    /// Dark green color.
     DarkGreen,
 
+    /// Light yellow color.
     Yellow,
+
+    /// Dark yellow color.
     DarkYellow,
 
+    /// Light blue color.
     Blue,
+
+    /// Dark blue color.
     DarkBlue,
 
+    /// Light magenta color.
     Magenta,
+
+    /// Dark magenta color.
     DarkMagenta,
 
+    /// Light cyan color.
     Cyan,
+
+    /// Dark cyan color.
     DarkCyan,
 
+    /// White color.
     White,
+
+    /// Grey color.
     Grey,
-    /// Color representing RGB-colors;
-    /// r = red
-    /// g = green
-    /// b = blue
-    Rgb {
-        r: u8,
-        g: u8,
-        b: u8,
-    },
+
+    /// An RGB color. See [RGB color model](https://en.wikipedia.org/wiki/RGB_color_model) for more info.
+    ///
+    /// Most UNIX terminals and Windows 10 supported only.
+    /// See [Platform-specific notes](enum.Color.html#platform-specific-notes) for more info.
+    Rgb { r: u8, g: u8, b: u8 },
+
+    /// An ANSI color. See [256 colors - cheat sheet](https://jonasjacek.github.io/colors/) for more info.
+    ///
+    /// Most UNIX terminals and Windows 10 supported only.
+    /// See [Platform-specific notes](enum.Color.html#platform-specific-notes) for more info.
     AnsiValue(u8),
 }
 
@@ -51,10 +96,10 @@ impl FromStr for Color {
 
     /// Creates a `Color` from the string representation.
     ///
-    /// # Remarks
+    /// # Notes
     ///
-    /// * `Color::White` is returned in case of an unknown color.
-    /// * This function does not return `Err` and you can safely unwrap.
+    /// * Returns `Color::White` in case of an unknown color.
+    /// * Does not return `Err` and you can safely unwrap.
     fn from_str(src: &str) -> ::std::result::Result<Self, Self::Err> {
         let src = src.to_lowercase();
 

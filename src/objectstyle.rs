@@ -4,16 +4,19 @@ use std::fmt::Display;
 
 use super::{Attribute, Color, StyledObject};
 
-/// Struct that contains the style properties that can be applied to a displayable object.
+/// An object style.
 #[derive(Debug, Clone, Default)]
 pub struct ObjectStyle {
+    /// The foreground color.
     pub fg_color: Option<Color>,
+    /// The background color.
     pub bg_color: Option<Color>,
+    /// List of attributes.
     pub attrs: Vec<Attribute>,
 }
 
 impl ObjectStyle {
-    /// Apply a `StyledObject` to the passed displayable object.
+    /// Creates a `StyledObject` by applying the style to the given `val`.
     pub fn apply_to<D: Display + Clone>(&self, val: D) -> StyledObject<D> {
         StyledObject {
             object_style: self.clone(),
@@ -21,24 +24,26 @@ impl ObjectStyle {
         }
     }
 
-    /// Get a new instance of `ObjectStyle`
+    /// Creates a new `ObjectStyle`.
     pub fn new() -> ObjectStyle {
         ObjectStyle::default()
     }
 
-    /// Set the background color of `ObjectStyle` to the passed color.
+    /// Sets the background color.
     pub fn bg(mut self, color: Color) -> ObjectStyle {
         self.bg_color = Some(color);
         self
     }
 
-    /// Set the foreground color of `ObjectStyle` to the passed color.
+    /// Sets the foreground color.
     pub fn fg(mut self, color: Color) -> ObjectStyle {
         self.fg_color = Some(color);
         self
     }
 
-    /// Add an `Attribute` to the current text. Like italic or bold.
+    /// Adds the attribute.
+    ///
+    /// You can add more attributes by calling this method multiple times.
     pub fn add_attr(&mut self, attr: Attribute) {
         self.attrs.push(attr);
     }
