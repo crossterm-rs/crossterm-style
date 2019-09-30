@@ -5,17 +5,36 @@ use serde::{Deserialize, Serialize};
 
 use crate::SetAttr;
 
-/// Enum with the different attributes to style your test.
+/// Represents a text attribute.
 ///
-/// There are few things to note:
-/// - Not all attributes are supported, some of them are only supported on Windows some only on Unix,
-/// and some are only very rarely supported.
-/// - I got those attributes, descriptions, supportability from here: https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters
-/// - Take note of the fact that when running your program cross-platform that some attributes might not work because of their support.
-/// - When an attribute is not supported nothing will happen with the terminal state.
+/// # Platform-specific notes
 ///
-/// # Example
-/// You can use an attribute in a write statement to apply the attribute to the terminal output.
+/// * Only UNIX and Windows 10 terminals do support text attributes.
+/// * Keep in mind that not all terminals support all attributes.
+/// * Crossterm implements almost all attributes listed in the
+///   [SGR parameters](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters).
+///
+/// | Attribute | Windows | Unix | Notes |
+/// | :-- | :--: | :--: | :-- |
+/// | `Reset` | ✓ | ✓ | |
+/// | `Bold` | ✓ | ✓ | |
+/// | `Dim` | ✓ | ✓ | |
+/// | `Italic` | ? | ? | Not widely supported, sometimes treated as inverse. |
+/// | `Underlined` | ✓ | ✓ | |
+/// | `SlowBlink` | ? | ? | Not widely supported, sometimes treated as inverse. |
+/// | `RapidBlink` | ? | ? | Not widely supported. MS-DOS ANSI.SYS; 150+ per minute. |
+/// | `Reverse` | ✓ | ✓ | |
+/// | `Hidden` | ✓ | ✓ | Also known as Conceal. |
+/// | `Fraktur` | ✗ | ✓ | Legible characters, but marked for deletion. |
+/// | `DefaultForegroundColor` | ? | ? | Implementation specific (according to standard). |
+/// | `DefaultBackgroundColor` | ? | ? | Implementation specific (according to standard). |
+/// | `Framed` | ? | ? | Not widely supported. |
+/// | `Encircled` | ? | ? | This should turn on the encircled attribute. |
+/// | `OverLined` | ? | ? | This should draw a line at the top of the text. |
+///
+/// # Examples
+///
+/// Basic usage:
 ///
 /// ```no_run
 /// use crossterm_style::Attribute;
@@ -27,7 +46,8 @@ use crate::SetAttr;
 /// );
 /// ```
 ///
-/// You can also call attribute functions on a `&'static str`:
+/// Style existing text:
+///
 /// ```no_run
 /// use crossterm_style::Styler;
 ///
@@ -38,104 +58,55 @@ use crate::SetAttr;
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum Attribute {
-    /// All attributes off
-    /// [info]: This will reset all current set attributes.
-    /// [Supportability]: Windows, UNIX.
+    /// Resets all the attributes.
     Reset = 0,
-    /// Increased Intensity
-    /// [info]: This will increase the text sensitivity also known as bold.
-    /// [Supportability]: Windows, UNIX.
+    /// Increases the text intensity.
     Bold = 1,
-    /// Decreased Intensity
-    /// [info]: This will decrease the text sensitivity also known as bold.
-    /// [Supportability]: Windows, UNIX.
+    /// Decreases the text intensity.
     Dim = 2,
-    /// Italic Text
-    /// [info]: This will make the text italic.
-    /// [Supportability]: Not widely supported, sometimes treated as inverse.
+    /// Emphasises the text.
     Italic = 3,
-    /// This will draw a line under the text.
-    /// [info]: An line under a word, especially in order to show its importance.
-    /// [Supportability]: Windows, UNIX
+    /// Underlines the text.
     Underlined = 4,
-    /// Slow Blinking Text
-    /// [info]: Blink Less than 150 per minute.
-    /// [Supportability]: UNIX
+    /// Makes the text blinking (< 150 per minute).
     SlowBlink = 5,
-    /// Slow Blinking Text
-    /// [info]: MS-DOS ANSI.SYS; 150+ per minute;
-    /// [Supportability]: Not widely supported
+    /// Makes the text blinking (>= 150 per minute).
     RapidBlink = 6,
-    /// Swap foreground and background colors
-    /// [info]: swap foreground and background colors
-    /// [Supportability]: Windows, UNIX
+    /// Swaps foreground and background colors.
     Reverse = 7,
-    /// Hide text
-    /// [info]:
-    /// - This will make the text hidden.
-    /// - Also known as 'Conceal'
-    /// [Supportability]: Windows, UNIX
+    /// Hides the text (also known as Conceal).
     Hidden = 8,
-    /// Cross-out text
-    /// [info]: Characters legible, but marked for deletion.
-    /// [Supportability]: UNIX
+    /// Crosses the text.
     CrossedOut = 9,
-    /// The Fraktur is a typeface belonging to the group of Gothic typefaces.
-    /// [info]: https://nl.wikipedia.org/wiki/Fraktur
-    /// [Supportability]: Rarely supported
+    /// Sets the [Fraktur](https://en.wikipedia.org/wiki/Fraktur) typeface.
+    ///
+    /// Mostly used for [mathematical alphanumeric symbols](https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols).
     Fraktur = 20,
-    /// This will turn off the bold attribute.
-    /// [info]:
-    /// - Double-underline per ECMA-48.
-    /// - WikiPedia: https://en.wikipedia.org/wiki/Talk:ANSI_escape_code#SGR_21%E2%80%94%60Bold_off%60_not_widely_supported
-    /// - Opposite of `Bold`(1)
-    /// [Supportability]: not widely supported
+    /// Turns off the `Bold` attribute.
     NoBold = 21,
-    /// Normal color or intensity
-    /// Neither bold nor faint
+    /// Switches the text back to normal intensity (no bold, italic).
     NormalIntensity = 22,
-    /// This will turn off the italic attribute.
-    /// [info]:
-    /// - Not italic, not Fraktur
-    /// - Opposite of `Italic`(3)
-    /// [Supportability]: Windows, UNIX
+    /// Turns off the `Italic` attribute.
     NoItalic = 23,
-    /// This will turn off the underline attribute.
-    /// [info]:
-    /// - Not singly or doubly underlined will be turned off.
-    /// - Opposite of `Underlined.`(4)
-    /// [Supportability]: Windows, UNIX
+    /// Turns off the `Underlined` attribute.
     NoUnderline = 24,
-    /// This will turn off the blinking attribute
-    /// [info]: Opposite of `Slow and Rapid blink.`(5,6)
-    /// [Supportability]: Unknown
+    /// Turns off the text blinking (`SlowBlink` or `RapidBlink`).
     NoBlink = 25,
-    /// This will turn off the reverse attribute.
-    /// [info]: Opposite of `Reverse`(7)
-    /// [Supportability]: Windows, unknown
-    NoInverse = 27,
-    /// This will make the text visible.
-    /// [info]: Opposite of `Hidden`(8)
-    /// [Supportability]: Unknown
+    /// Turns off the `Reverse` attribute.
+    NoInverse = 27, // TODO Shouldn't we rename this to `NoReverse`? Or `Reverse` to `Inverse`?
+    /// Turns off the `Hidden` attribute.
     NoHidden = 28,
-    /// This will turn off the crossed out attribute.
-    /// [info]: Opposite of `CrossedOut`(9)
-    /// [Supportability]: Not widely supported
+    /// Turns off the `CrossedOut` attribute.
     NotCrossedOut = 29,
-    /// Framed text.
-    /// [Supportability]: Not widely supported
+    /// Makes the text framed.
     Framed = 51,
-    /// This will turn on the encircled attribute.
+    /// Makes the text encircled.
     Encircled = 52,
-    /// This will draw a line at the top of the text.
-    /// [info]: Implementation defined (according to standard)
-    /// [Supportability]: Unknown
+    /// Draws a line at the top of the text.
     OverLined = 53,
-    /// This will turn off the framed or encircled attribute.
+    /// Turns off the `Frame` and `Encircled` attributes.
     NotFramedOrEncircled = 54,
-    /// This will turn off the overLined attribute.
-    /// [info]: Opposite of `OverLined`(7)
-    /// [Supportability]: Windows, unknown
+    /// Turns off the `OverLined` attribute.
     NotOverLined = 55,
 
     #[doc(hidden)]
