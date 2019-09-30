@@ -23,7 +23,7 @@ use crate::{Attribute, Color, Colorize, ObjectStyle, ResetColor, SetAttr, SetBg,
 /// ```
 #[derive(Clone)]
 pub struct StyledObject<D: Display + Clone> {
-    /// The object style (colors, text attributes).
+    /// The object style (colors, content attributes).
     pub object_style: ObjectStyle,
     /// An object to apply the style on.
     pub content: D,
