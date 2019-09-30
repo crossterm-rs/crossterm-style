@@ -2,8 +2,8 @@
 
 # Crossterm Style
 
-This crate allows you to work with the terminal cursor. It supports all UNIX and Windows terminals down
-to Windows 7 (not all terminals are tested, see the
+This crate allows you to work with the terminal colors and text attributes. It supports all UNIX
+and Windows terminals down to Windows 7 (not all terminals are tested, see the
 [Tested Terminals](https://github.com/crossterm-rs/crossterm/blob/master/README.md#tested-terminals) for more info).
 
 `crossterm_style` is a sub-crate of the [crossterm](https://crates.io/crates/crossterm) crate. You can use it
