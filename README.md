@@ -42,7 +42,7 @@ crossterm_style = "0.5"
 And import the `crossterm_style` modules you want to use.
 
 ```rust  
-pub use crossterm_style::{color, style, Attribute, Color, ColorType, ObjectStyle, StyledObject, TerminalColor, Colorize, Styler};
+pub use crossterm_style::{color, style, Attribute, Color, ObjectStyle, StyledObject, TerminalColor, Colorize, Styler};
 ```
 
 ### Useful Links

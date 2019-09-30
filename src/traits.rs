@@ -2,14 +2,16 @@ use std::fmt::Display;
 
 use crate::StyledObject;
 
-/// Provides a set of methods to color any type implementing `Display` with attributes.
+/// Provides a set of methods to color any type implementing `Display` + `Clone`.
 ///
-/// This trait is implemented for `&static str` and `StyledObject` and thus the methods of this trait could be called on them.
+/// This trait is implemented for `&static str` and `StyledObject`, you can invoke these methods there.
 ///
-/// ```rust
+/// # Example
+///
+/// ```no_run
 /// use crossterm_style::Colorize;
 ///
-/// let styled_text = "Red forground color on blue background.".red().on_blue();
+/// let styled_text = "Red foreground color on blue background.".red().on_blue();
 /// println!("{}", styled_text);
 /// ```
 pub trait Colorize<D: Display + Clone> {
@@ -50,11 +52,11 @@ pub trait Colorize<D: Display + Clone> {
 
 /// Provides a set of methods to style any type implementing `Display` with attributes.
 ///
-/// This trait is implemented for `&static str` and `StyledObject` and thus the methods of this trait could be called on them.
+/// This trait is implemented for `&static str` and `StyledObject`, you can invoke these methods there.
 ///
 /// # Example
 ///
-/// ```rust
+/// ```no_run
 /// use crossterm_style::Styler;
 ///
 /// println!("{}", "Bold text".bold());

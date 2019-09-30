@@ -43,3 +43,30 @@ impl ObjectStyle {
         self.attrs.push(attr);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{Attribute, Color, ObjectStyle};
+
+    #[test]
+    fn test_set_fg_bg_add_attr() {
+        let mut object_style = ObjectStyle::new().fg(Color::Blue).bg(Color::Red);
+        object_style.add_attr(Attribute::Reset);
+
+        assert_eq!(object_style.fg_color, Some(Color::Blue));
+        assert_eq!(object_style.bg_color, Some(Color::Red));
+        assert_eq!(object_style.attrs[0], Attribute::Reset);
+    }
+
+    #[test]
+    fn test_apply_object_style_to_text() {
+        let mut object_style = ObjectStyle::new().fg(Color::Blue).bg(Color::Red);
+        object_style.add_attr(Attribute::Reset);
+
+        let styled_object = object_style.apply_to("test");
+
+        assert_eq!(styled_object.object_style.fg_color, Some(Color::Blue));
+        assert_eq!(styled_object.object_style.bg_color, Some(Color::Red));
+        assert_eq!(styled_object.object_style.attrs[0], Attribute::Reset);
+    }
+}

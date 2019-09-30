@@ -3,7 +3,7 @@ use std::fmt::Display;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-use crossterm_utils::csi;
+use crate::SetAttr;
 
 /// Enum with the different attributes to style your test.
 ///
@@ -17,7 +17,9 @@ use crossterm_utils::csi;
 /// # Example
 /// You can use an attribute in a write statement to apply the attribute to the terminal output.
 ///
-/// ```ignore
+/// ```no_run
+/// use crossterm_style::Attribute;
+///
 /// println!(
 ///     "{} Underlined {} No Underline",
 ///     Attribute::Underlined,
@@ -26,12 +28,12 @@ use crossterm_utils::csi;
 /// ```
 ///
 /// You can also call attribute functions on a `&'static str`:
-/// ```ignore
-/// use Colorizer;
+/// ```no_run
+/// use crossterm_style::Styler;
 ///
-/// println!("{}", style("Bold text").bold());
-/// println!("{}", style("Underlined text").underlined());
-/// println!("{}", style("Negative text").negative());
+/// println!("{}", "Bold text".bold());
+/// println!("{}", "Underlined text".underlined());
+/// println!("{}", "Negative text".negative());
 /// ```
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
@@ -142,7 +144,7 @@ pub enum Attribute {
 
 impl Display for Attribute {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
-        write!(f, "{}", format!(csi!("{}m"), *self as i16))?;
+        write!(f, "{}", SetAttr(*self))?;
         Ok(())
     }
 }

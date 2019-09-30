@@ -3,32 +3,26 @@ use std::fmt::Display;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-use crate::color::color;
+use crate::color;
 use crate::enums::Color;
 
-/// Could be used to color the foreground or background color.
-///
-/// `Colored::Fg` represents the foreground color.
-/// `Color::Bg` represents the background color.
+/// Can be used to easily change the front and back ground color
 ///
 /// # Example
 ///
-/// You can use `Colored` in a write statement to apply the attribute to the terminal output.
+/// `Colored` implements `Display` therefore you can use it in any `write` operation.
 ///
-/// ```ignore
+/// ```no_run
+/// use crossterm_style::{Colored, Color};
 /// println!("{} Red foreground color", Colored::Fg(Color::Red));
 /// println!("{} Blue background color", Colored::Bg(Color::Blue));
-/// ```
-///
-/// You can also call coloring functions on a `&'static str`:
-/// ```ignore
-/// let styled_text = "Red forground color on blue background.".red().on_blue();
-/// println!("{}", styled_text);
 /// ```
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Ord, PartialOrd, Hash)]
 pub enum Colored {
+    /// Use this if you want to change the foreground color
     Fg(Color),
+    /// Use this if you want to change the background color
     Bg(Color),
 }
 
