@@ -7,39 +7,42 @@ use crossterm_utils::queue;
 
 use crate::{Attribute, Color, Colorize, ObjectStyle, ResetColor, SetAttr, SetBg, SetFg, Styler};
 
-/// Contains both the style and the content which can be styled.
+/// A styled object.
+///
+/// # Examples
+///
+/// ```rust
+/// use crossterm_style::{style, Color, Attribute};
+///
+/// let styled = style("Hello there")
+///     .with(Color::Yellow)
+///     .on(Color::Blue)
+///     .attr(Attribute::Bold);
+///
+/// println!("{}", styled);
+/// ```
 #[derive(Clone)]
 pub struct StyledObject<D: Display + Clone> {
+    /// The object style (colors, text attributes).
     pub object_style: ObjectStyle,
+    /// An object to apply the style on.
     pub content: D,
 }
 
 impl<'a, D: Display + 'a + Clone> StyledObject<D> {
-    /// Set the foreground color with the given color
-    ///
-    /// # Remarks
-    ///
-    /// This methods consumes 'self', and works like a builder, like: `with().on().attr()`.
+    /// Sets the foreground color.
     pub fn with(mut self, foreground_color: Color) -> StyledObject<D> {
         self.object_style = self.object_style.fg(foreground_color);
         self
     }
 
-    /// Set the background color with the given color
-    ///
-    /// # Remarks
-    ///
-    /// This methods consumes 'self', and works like a builder, like: `with().on().attr()`.
+    /// Sets the background color.
     pub fn on(mut self, background_color: Color) -> StyledObject<D> {
         self.object_style = self.object_style.bg(background_color);
         self
     }
 
-    /// Add an attribute to the styled object.
-    ///
-    /// # Remarks
-    ///
-    /// This methods consumes 'self', and works like a builder, like: `with().on().attr()`.
+    /// Sets the text attribute.
     pub fn attr(mut self, attr: Attribute) -> StyledObject<D> {
         self.object_style.add_attr(attr);
         self

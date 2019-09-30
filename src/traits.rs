@@ -2,11 +2,14 @@ use std::fmt::Display;
 
 use crate::StyledObject;
 
-/// Provides a set of methods to color any type implementing `Display` + `Clone`.
+/// Provides a set of methods to set the colors.
 ///
-/// This trait is implemented for `&static str` and `StyledObject`, you can invoke these methods there.
+/// Every method with the `on_` prefix sets the background color. All other methods set
+/// the foreground color.
 ///
-/// # Example
+/// Method names correspond to the [`Color`](enum.Color.html) enum variants.
+///
+/// # Examples
 ///
 /// ```no_run
 /// use crossterm_style::Colorize;
@@ -50,11 +53,11 @@ pub trait Colorize<D: Display + Clone> {
     fn on_grey(self) -> StyledObject<D>;
 }
 
-/// Provides a set of methods to style any type implementing `Display` with attributes.
+/// Provides a set of methods to set the text attributes.
 ///
-/// This trait is implemented for `&static str` and `StyledObject`, you can invoke these methods there.
+/// Method names correspond to the [`Attribute`](enum.Attribute.html) enum variants.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```no_run
 /// use crossterm_style::Styler;
