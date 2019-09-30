@@ -14,7 +14,7 @@ use crate::SetAttr;
 /// * Crossterm implements almost all attributes listed in the
 ///   [SGR parameters](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters).
 ///
-/// | Attribute | Windows | Unix | Notes |
+/// | Attribute | Windows | UNIX | Notes |
 /// | :-- | :--: | :--: | :-- |
 /// | `Reset` | ✓ | ✓ | |
 /// | `Bold` | ✓ | ✓ | |
