@@ -27,7 +27,7 @@
 //! use std::io::{stdout, Write};
 //!
 //! use crossterm_utils::{execute, Result, Output};
-//! use crossterm_style::{SetBg, SetFg, SetAttr, Color, Attribute};
+//! use crossterm_style::{SetBg, SetFg, ResetColor, Color, Attribute};
 //!
 //! fn main() -> Result<()> {
 //!     execute!(
@@ -38,7 +38,7 @@
 //!         SetBg(Color::Red),
 //!         Output("Styled text here.".to_string()),
 //!         // Reset to default colors
-//!         SetAttr(Color::Reset)
+//!         ResetColor
 //!     )
 //! }
 //! ```
@@ -57,7 +57,7 @@
 //! ```no_run
 //! use crossterm_style::Colorize;
 //!
-//! println!("Red foreground color & blue background.".red().on_blue());
+//! println!("{}", "Red foreground color & blue background.".red().on_blue());
 //! ```
 //!
 //! ### Attributes
