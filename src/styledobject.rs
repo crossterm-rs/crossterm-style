@@ -42,7 +42,9 @@ impl<'a, D: Display + 'a + Clone> StyledObject<D> {
         self
     }
 
-    /// Sets the text attribute.
+    /// Adds the attribute.
+    ///
+    /// You can add more attributes by calling this method multiple times.
     pub fn attr(mut self, attr: Attribute) -> StyledObject<D> {
         self.object_style.add_attr(attr);
         self

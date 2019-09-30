@@ -11,7 +11,7 @@ pub struct ObjectStyle {
     pub fg_color: Option<Color>,
     /// The background color.
     pub bg_color: Option<Color>,
-    /// List of text attributes.
+    /// List of attributes.
     pub attrs: Vec<Attribute>,
 }
 
@@ -41,7 +41,9 @@ impl ObjectStyle {
         self
     }
 
-    /// Adds the text attribute.
+    /// Adds the attribute.
+    ///
+    /// You can add more attributes by calling this method multiple times.
     pub fn add_attr(&mut self, attr: Attribute) {
         self.attrs.push(attr);
     }
