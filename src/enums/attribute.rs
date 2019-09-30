@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::SetAttr;
 
-/// Represents a text attribute.
+/// Represents an attribute.
 ///
 /// # Platform-specific Notes
 ///
