@@ -11,7 +11,7 @@
 //!
 //! ## Platform-specific Notes
 //!
-//! Not all features are supported on all terminals / platforms. You should always consult
+//! Not all features are supported on all terminals/platforms. You should always consult
 //! platform-specific notes of the following types:
 //!
 //! * [Color](enum.Color.html#platform-specific-notes)
