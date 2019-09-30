@@ -308,7 +308,7 @@ pub fn color() -> TerminalColor {
 ///
 /// # Notes
 ///
-/// Commands must be executed / queued for execution otherwise they do nothing.
+/// Commands must be executed/queued for execution otherwise they do nothing.
 pub struct SetFg(pub Color);
 
 impl Command for SetFg {
@@ -330,7 +330,7 @@ impl Command for SetFg {
 ///
 /// # Notes
 ///
-/// Commands must be executed / queued for execution otherwise they do nothing.
+/// Commands must be executed/queued for execution otherwise they do nothing.
 pub struct SetBg(pub Color);
 
 impl Command for SetBg {
@@ -352,7 +352,7 @@ impl Command for SetBg {
 ///
 /// # Notes
 ///
-/// Commands must be executed / queued for execution otherwise they do nothing.
+/// Commands must be executed/queued for execution otherwise they do nothing.
 pub struct SetAttr(pub Attribute);
 
 impl Command for SetAttr {
@@ -375,7 +375,7 @@ impl Command for SetAttr {
 ///
 /// # Notes
 ///
-/// Commands must be executed / queued for execution otherwise they do nothing.
+/// Commands must be executed/queued for execution otherwise they do nothing.
 pub struct PrintStyledFont<D: Display + Clone>(pub StyledObject<D>);
 
 impl<D> Command for PrintStyledFont<D>
@@ -398,7 +398,7 @@ where
 ///
 /// # Notes
 ///
-/// Commands must be executed / queued for execution otherwise they do nothing.
+/// Commands must be executed/queued for execution otherwise they do nothing.
 pub struct ResetColor;
 
 impl Command for ResetColor {
