@@ -6,7 +6,7 @@ use std::result;
 use crossterm_utils::queue;
 
 use crate::{
-    color, Attribute, Color, Colorize, ObjectStyle, ResetColor, SetAttr, SetBg, SetFg, Styler,
+    Attribute, Color, Colorize, ObjectStyle, ResetColor, SetAttr, SetBg, SetFg, Styler,
 };
 
 /// Contains both the style and the content which can be styled.
