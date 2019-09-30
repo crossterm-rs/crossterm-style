@@ -267,7 +267,7 @@ impl TerminalColor {
         self.color.reset()
     }
 
-    /// Gets available color count.
+    /// Returns available color count.
     ///
     /// # Notes
     ///
