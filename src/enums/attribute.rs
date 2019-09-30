@@ -7,7 +7,7 @@ use crate::SetAttr;
 
 /// Represents a text attribute.
 ///
-/// # Platform-specific notes
+/// # Platform-specific Notes
 ///
 /// * Only UNIX and Windows 10 terminals do support text attributes.
 /// * Keep in mind that not all terminals support all attributes.

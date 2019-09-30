@@ -35,7 +35,7 @@ Issues in this repository are disabled for the same reason. Please, report all i
     - Bold, italic, underscore and crossed word
     - [More attributes](https://crossterm-rs.github.io/crossterm/docs/styling.html#attributes) (Windows 10 and UNIX only)
 
-## Getting started
+## Getting Started
 
 <details>
 <summary>
@@ -83,7 +83,7 @@ println!("{}", styled_text);
 let styled_text = style("Bold Underlined").with(Color::Red).on(Color::Blue);
 ```
 
-### RGB colors & ANSI values
+### RGB Colors and ANSI Values
 
 ```rust
 use crossterm::{Colored, Color, Colorize};
@@ -99,7 +99,7 @@ println!("{} some colored text", Colored::Fg(Color::Rgb {
 println!("{} some colored text", Colored::Fg(Color::AnsiValue(10)));
 ```
 
-## Other resources
+## Other Resources
 
 - [API documentation](https://docs.rs/crossterm_style/) (with other examples)
 - [Examples repository](https://github.com/crossterm-rs/examples)

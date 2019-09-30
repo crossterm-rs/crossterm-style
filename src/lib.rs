@@ -9,7 +9,7 @@
 //! [examples](https://github.com/crossterm-rs/examples) repository
 //! to demonstrate the capabilities.
 //!
-//! ## Platform-specific notes
+//! ## Platform-specific Notes
 //!
 //! Not all features are supported on all terminals / platforms. You should always consult
 //! platform-specific notes of the following types:
