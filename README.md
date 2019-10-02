@@ -8,8 +8,7 @@ and Windows terminals down to Windows 7 (not all terminals are tested, see the
 
 `crossterm_style` is a sub-crate of the [crossterm](https://crates.io/crates/crossterm) crate. You can use it
 directly, but it's **highly recommended** to use the [crossterm](https://crates.io/crates/crossterm) crate with
-the `style` feature enabled (see [feature flags](https://crossterm-rs.github.io/crossterm/docs/feature_flags.html)
-for more info).
+the `style` feature enabled.
 
 ## Future
 
@@ -31,9 +30,7 @@ Issues in this repository are disabled for the same reason. Please, report all i
   - Background color (16 base colors)
   - 256 (ANSI) color support (Windows 10 and UNIX only)
   - RGB color support (Windows 10 and UNIX only)
-  - Text attributes
-    - Bold, italic, underscore and crossed word
-    - [More attributes](https://crossterm-rs.github.io/crossterm/docs/styling.html#attributes) (Windows 10 and UNIX only)
+  - Text attributes like bold, italic, underscore, crossed word, etc.
 
 ## Getting Started
 
@@ -103,7 +100,6 @@ println!("{} some colored text", Colored::Fg(Color::AnsiValue(10)));
 
 - [API documentation](https://docs.rs/crossterm_style/) (with other examples)
 - [Examples repository](https://github.com/crossterm-rs/examples)
-- [The Book](https://crossterm-rs.github.io/crossterm/docs/index.html)
 
 ## Authors
 

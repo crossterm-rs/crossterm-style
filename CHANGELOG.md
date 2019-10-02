@@ -7,6 +7,7 @@
 - Fixed bug with `SetBg` command, WinApi logic
 - Fixed bug with `StyledObject`, used stdout for resetting terminal color
 - Introduced `ResetColor` command
+- Remove all references to the crossterm book
 
 # Version 0.5.1
 
