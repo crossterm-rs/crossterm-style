@@ -27,7 +27,6 @@ pub(crate) struct WinApiColor;
 impl WinApiColor {
     pub fn new() -> Box<WinApiColor> {
         init_console_color().unwrap();
-
         Box::from(WinApiColor)
     }
 }
