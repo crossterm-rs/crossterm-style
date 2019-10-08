@@ -241,7 +241,8 @@ impl TerminalColor {
     pub fn new() -> TerminalColor {
         #[cfg(windows)]
         let color = if supports_ansi() {
-            Box::from(AnsiColor::new()) as Box<(dyn Style + Sync + Send)>
+           let a= Box::from(AnsiColor::new()) as Box<(dyn Style + Sync + Send)>;
+            WinApiColor::new() as Box<(dyn Style + Sync + Send)>
         } else {
             WinApiColor::new() as Box<(dyn Style + Sync + Send)>
         };
