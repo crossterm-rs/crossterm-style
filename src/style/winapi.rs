@@ -27,7 +27,6 @@ pub(crate) struct WinApiColor;
 impl WinApiColor {
     pub fn new() -> Box<WinApiColor> {
         init_console_color().unwrap();
-
         Box::from(WinApiColor)
     }
 }
@@ -111,8 +110,8 @@ impl From<Colored> for u16 {
                     Color::DarkMagenta => FG_RED | FG_BLUE,
                     Color::Cyan => FG_INTENSITY | FG_GREEN | FG_BLUE,
                     Color::DarkCyan => FG_GREEN | FG_BLUE,
-                    Color::White => FG_RED | FG_GREEN | FG_BLUE,
-                    Color::Grey => FG_INTENSITY | FG_RED | FG_GREEN | FG_BLUE,
+                    Color::White => FG_INTENSITY | FG_RED | FG_GREEN | FG_BLUE,
+                    Color::Grey => FG_RED | FG_GREEN | FG_BLUE,
 
                     Color::Reset => {
                         // safe unwrap, initial console color was set with `init_console_color`.
