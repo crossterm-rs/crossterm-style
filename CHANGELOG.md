@@ -1,4 +1,4 @@
-# Version master
+# Version 0.5.2
 
 - Added unit tests 
 - Restructured files
