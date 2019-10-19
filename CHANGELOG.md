@@ -10,6 +10,7 @@
 - Sync documentation style ([PR #3](https://github.com/crossterm-rs/crossterm-style/pull/3))
 - Remove all references to the crossterm book ([PR #4](https://github.com/crossterm-rs/crossterm-style/pull/4))
 - Windows 7 grey/white foreground/intensity swapped ([PR #5](https://github.com/crossterm-rs/crossterm-style/pull/5))
+
 # Version 0.5.1
 
 - Maintenance release only
