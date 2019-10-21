@@ -1,13 +1,15 @@
-# Version master
+# Version 0.5.2
 
-- Added unit tests 
-- Restructured files
-- Removed unsafe static code
-- Improved documentation and added book page to lib.rs
-- Fixed bug with `SetBg` command, WinApi logic
-- Fixed bug with `StyledObject`, used stdout for resetting terminal color
-- Introduced `ResetColor` command
-- Remove all references to the crossterm book
+- Refactoring ([PR #2](https://github.com/crossterm-rs/crossterm-style/pull/2))
+  - Added unit tests 
+  - Restructured files
+  - Improved documentation and added book page to lib.rs
+  - Fixed bug with `SetBg` command, WinApi logic
+  - Fixed bug with `StyledObject`, used stdout for resetting terminal color
+  - Introduced `ResetColor` command
+- Sync documentation style ([PR #3](https://github.com/crossterm-rs/crossterm-style/pull/3))
+- Remove all references to the crossterm book ([PR #4](https://github.com/crossterm-rs/crossterm-style/pull/4))
+- Windows 7 grey/white foreground/intensity swapped ([PR #5](https://github.com/crossterm-rs/crossterm-style/pull/5))
 
 # Version 0.5.1
 
